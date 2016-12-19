@@ -1,0 +1,22 @@
+{
+    "name": "william/longphp",
+    "require": {
+        "philo/laravel-blade": "3.*",
+        "php": ">=5.6"
+    },
+    "authors": [
+        {
+            "name": "William Jiang",
+            "email": "longzai3608@163.com"
+        }
+    ],
+    "autoload": {
+        "classmap": [
+            "System",
+            "System/Long",
+            "Application",
+            "Application/Library",
+            "Application/Controllers"
+        ]
+    }
+}
