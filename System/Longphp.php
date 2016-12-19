@@ -19,3 +19,5 @@ Long\Config\Config::loadConfig('config');
 
 
 new \Controllers\TestController();
+
+var_dump($_SERVER['REQUEST_URI']);

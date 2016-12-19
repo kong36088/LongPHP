@@ -9,6 +9,7 @@ namespace Controllers;
 
 use Long\Log\Log;
 use Long\Long_Controller;
+use Long\Long_Exception;
 use Long\Url\Url;
 
 class TestController extends Long_Controller
@@ -21,8 +22,8 @@ class TestController extends Long_Controller
 		$this->testConfig();
 		$this->testRender();
 		$this->testUrl();
-		$this->testError();
-		$this->testException();
+		//$this->testError();
+		//$this->testException();
 		ob_end_flush();
 	}
 
@@ -60,7 +61,7 @@ class TestController extends Long_Controller
 
 	public function testException(){
 		//测试Exception
-		throw new \Exception('Test  Exception');
+		Long_Exception::showException(new \Exception('Test  Exception'));
 	}
 
 }
