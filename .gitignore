@@ -2,5 +2,7 @@
 /vendor/
 cache/*
 composer.lock
+Application/logs
 
 !cache/index.html
+!Application/logs/index.html

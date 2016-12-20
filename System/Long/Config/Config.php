@@ -16,6 +16,20 @@ class Config
 
 	protected static $isLoaded = array();
 
+	/**
+	 * 自动加载配置文件
+	 */
+	public static function initialize()
+	{
+		self::loadConfig('autoload');
+		$autoload = self::get('autoload_config');
+		if (is_array($autoload)) {
+			foreach ($autoload as $k => $configFile) {
+				self::loadConfig($configFile);
+			}
+		}
+	}
+
 
 	public static function get($key = '')
 	{
@@ -36,7 +50,7 @@ class Config
 	 */
 	public static function loadConfig($file = '')
 	{
-		$file = str_replace('.php', '', $file).'.php';
+		$file = str_replace('.php', '', $file) . '.php';
 
 		if (empty($file)) {
 			Long_Exception::showError('Wrong file name', 503);
@@ -45,7 +59,7 @@ class Config
 		$filePath = APP_PATH . DIRECTORY_SEPARATOR . 'config/' . $file;
 
 		if (!file_exists($filePath)) {
-			Long_Exception::showError('File ' . $file . 'doesn\'t exists',503);
+			Long_Exception::showError('File ' . $file . 'doesn\'t exists', 503);
 		} else {
 			if (isset(self::$isLoaded[$file])) {
 				return true;
@@ -60,7 +74,7 @@ class Config
 			self::$isLoaded[$file] = true;
 			self::$configItem = array_merge(self::$configItem, $config);
 		}
-		Log::writeLog('Load config file '.$file, 'INFO');
+		Log::writeLog('Load config file ' . $file, 'INFO');
 		return true;
 	}
 

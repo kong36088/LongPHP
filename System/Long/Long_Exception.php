@@ -33,10 +33,27 @@ class Long_Exception
 
 	public static function show404()
 	{
-		setHeader(404);
+		$template = 'error_404';
+		$templatesPath = VIEW_PATH . DIRECTORY_SEPARATOR . 'errors' . DIRECTORY_SEPARATOR;
+
+		if (is_cli()) {
+			$template = 'cli' . DIRECTORY_SEPARATOR . $template;
+			$heading = 'Not Found';
+			$message = 'The controller/method pair you requested was not found.';
+		} else {
+			$template = 'html' . DIRECTORY_SEPARATOR . $template;
+			$heading = '404 Page Not Found';
+			$message = 'The page you requested was not found.';
+			setHeader(404);
+		}
+
+
 		ob_start();
-		echo 'page not found.';
+		include($templatesPath . $template . '.php');
+		$buffer = ob_get_contents();
 		ob_end_flush();
+		echo $buffer;
+
 		exit(1);
 	}
 
@@ -61,6 +78,9 @@ class Long_Exception
 		echo $buffer;
 	}
 
+	/**
+	 * @param \Exception $exception
+	 */
 	public static function showException($exception)
 	{
 		$templates_path = VIEW_PATH . DIRECTORY_SEPARATOR . 'errors' . DIRECTORY_SEPARATOR;

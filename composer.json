@@ -13,10 +13,7 @@
     "autoload": {
         "classmap": [
             "System",
-            "System/Long",
-            "Application",
-            "Application/Library",
-            "Application/Controllers"
+            "Application"
         ]
     }
 }

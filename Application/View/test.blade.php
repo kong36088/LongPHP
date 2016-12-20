@@ -2,6 +2,6 @@
  * Longphp
  * Author: William Jiang
  */
-this is an error
+this is a Test
 
-{{$err}}
+{{$test}}

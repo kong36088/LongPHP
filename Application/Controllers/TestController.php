@@ -26,10 +26,13 @@ class TestController extends Long_Controller
 		//$this->testException();
 		ob_end_flush();
 	}
+	public function index(){
+		echo 'this is index method';
+	}
 
 	public function testRender()
 	{
-		$this->render('error', ['err' => 'test error here']);
+		$this->render('test', ['test' => 'test here']);
 	}
 
 	public function testConfig()
@@ -61,7 +64,7 @@ class TestController extends Long_Controller
 
 	public function testException(){
 		//测试Exception
-		Long_Exception::showException(new \Exception('Test  Exception'));
+		throw new \Exception('Test  Exception');
 	}
 
 }

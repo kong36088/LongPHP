@@ -18,7 +18,7 @@ if (!function_exists('is_cli')) {
 	}
 }
 
-if (!function_exists('set_header')) {
+if (!function_exists('setHeader')) {
 	/**
 	 * @param int $code
 	 * @
@@ -87,7 +87,7 @@ if (!function_exists('set_header')) {
 }
 
 
-if (!function_exists('error_handler')) {
+if (!function_exists('errorHandler')) {
 	function errorHandler($severity, $errMsg, $errFile, $errLine, $errContext)
 	{
 		$is_error = (((E_ERROR | E_USER_ERROR | E_COMPILE_ERROR | E_CORE_ERROR | E_USER_ERROR) & $severity) === $severity);
@@ -108,14 +108,14 @@ if (!function_exists('error_handler')) {
 	}
 }
 
-if (!function_exists('exception_handler')) {
+if (!function_exists('exceptionHandler')) {
 	/**
 	 * 显示处理异常
 	 * @param Exception $exception
 	 */
 	function exceptionHandler($exception)
 	{
-		\Long\Long_Exception::logError($exception->getMessage(), $exception->getFile(), $exception->getLine(), 'error');
+		\Long\Long_Exception::logError('error',$exception->getMessage(), $exception->getFile(), $exception->getLine());
 
 		if (str_ireplace(array('off', 'none', 'no', 'false', 'null'), '', ini_get('display_errors'))) {
 			\Long\Long_Exception::showException($exception);
@@ -123,7 +123,7 @@ if (!function_exists('exception_handler')) {
 		exit(1);
 	}
 }
-if (!function_exists('throw_error')) {
+if (!function_exists('throwError')) {
 	function throwError($message = '', $status_code = 500)
 	{
 		\Long\Long_Exception::showError($message, $status_code);
