@@ -10,7 +10,7 @@ use Long\Log\Log;
 use Long\Output\Output;
 use Philo\Blade\Blade;
 
-class Long_Controller implements Imp\Imp_Controller
+class Long_Controller
 {
 	/**
 	 * 用于保存已加载的外部类

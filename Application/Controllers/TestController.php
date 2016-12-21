@@ -7,6 +7,7 @@
 
 namespace Controllers;
 
+use Long\Input\Input;
 use Long\Log\Log;
 use Long\Long_Controller;
 use Long\Long_Exception;
@@ -27,6 +28,7 @@ class TestController extends Long_Controller
 		ob_end_flush();
 	}
 	public function index(){
+		echo Input::get('a');
 		echo 'this is index method';
 	}
 
@@ -67,4 +69,8 @@ class TestController extends Long_Controller
 		throw new \Exception('Test  Exception');
 	}
 
+	public function testModel(){
+		$model = M('test');
+		print_r($model->query('SELECT * FROM USER'));
+	}
 }

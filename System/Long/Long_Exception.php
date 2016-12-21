@@ -46,7 +46,7 @@ class Long_Exception
 			$message = 'The page you requested was not found.';
 			setHeader(404);
 		}
-
+		Log::writeLog($message, 'error');
 
 		ob_start();
 		include($templatesPath . $template . '.php');

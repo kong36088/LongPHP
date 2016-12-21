@@ -21,10 +21,10 @@ if (!function_exists('is_cli')) {
 if (!function_exists('setHeader')) {
 	/**
 	 * @param int $code
-	 * @
 	 */
 	function setHeader($code = 200)
 	{
+		if (is_cli()) return;
 		$code = intval($code);
 		$status = array(
 			100 => 'Continue',
@@ -74,14 +74,14 @@ if (!function_exists('setHeader')) {
 			505 => 'HTTP Version Not Supported'
 		);
 		if (!isset($status[$code])) {
-			throwError('Invalid error code');
+			throwError('Invalid error code', 500);
 		}
 
 		if (strpos(PHP_SAPI, 'cgi') === 0) {
 			header('Status:' . $code . ' ' . $status[$code], true);
 		} else {
 			$protocol = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.1';
-			header($protocol . ' ' . $code . ' ' . $status[$code], true);
+			header($protocol . ' ' . $code . ' ' . $status[$code], true, $code);
 		}
 	}
 }
@@ -115,7 +115,7 @@ if (!function_exists('exceptionHandler')) {
 	 */
 	function exceptionHandler($exception)
 	{
-		\Long\Long_Exception::logError('error',$exception->getMessage(), $exception->getFile(), $exception->getLine());
+		\Long\Long_Exception::logError('error', $exception->getMessage(), $exception->getFile(), $exception->getLine());
 
 		if (str_ireplace(array('off', 'none', 'no', 'false', 'null'), '', ini_get('display_errors'))) {
 			\Long\Long_Exception::showException($exception);
@@ -129,5 +129,22 @@ if (!function_exists('throwError')) {
 		\Long\Long_Exception::showError($message, $status_code);
 
 		exit(1);
+	}
+}
+
+if (!function_exists('M')) {
+	function &M($name)
+	{
+		$modelName = ucfirst($name) . 'Model';
+		$modelFile = ucfirst($name) . 'Model.php';
+		$filePath = APP_PATH . DIRECTORY_SEPARATOR . 'Model' . DIRECTORY_SEPARATOR . $modelFile;
+
+		//判断文件是否存在
+		if (!file_exists($filePath)) {
+			Long\Long_Exception::showError('Model ' . $name . 'does not exist');
+		}
+		$controller = 'Model\\' . $modelName;
+		$M = new $controller();
+		return $M;
 	}
 }

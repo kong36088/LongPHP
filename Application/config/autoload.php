@@ -4,4 +4,4 @@
  * Author: William Jiang
  */
 
-$config['autoload_config'] = array('config', 'router');
+$config['autoload_config'] = array('config', 'router','database');

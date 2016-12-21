@@ -8,6 +8,7 @@ namespace Long;
 
 
 use Long\Config\Config;
+use Long\Log\Log;
 
 class Long_Router
 {
@@ -16,6 +17,9 @@ class Long_Router
 		if (is_cli()) {
 			self::_commandLine();
 		}
+		Log::writeLog('Router init, request URI ' . $_SERVER['REQUEST_URI'], 'INFO');
+
+
 		$appRequest = self::_router();
 		//分发路由
 		self::handler($appRequest);
