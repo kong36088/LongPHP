@@ -6,7 +6,6 @@
 
 namespace Long\Database;
 
-use mysqli;
 use Long\Long_Exception;
 
 class MysqliDriver extends DBDriver
@@ -17,26 +16,28 @@ class MysqliDriver extends DBDriver
 	{
 		parent::__construct();
 
-		$this->_con = new mysqli($this->_host, $this->_user, $this->_password, $this->_database, $this->_port);
+		//TODO 不能插入中文
+
+		$this->_con = new \mysqli($this->_host, $this->_user, $this->_password, $this->_database, $this->_port);
 
 		if ($this->_con->connect_errno) {
-			Long_Exception::showError("Connect failed: " . $this->_con->connect_error, 500, 'error_db');
+			throwError("Connect failed: " . $this->_con->connect_error, 500, true, 'error_db');
 			exit(1);
 		}
 
 		if (!empty($this->_charset)) {
-			$this->_con->query("set names 'utf8'");
+			$this->_con->query("set names '" . $this->_charset . "'");
 		}
 
 	}
 
 	function query($sql, $params = array())
 	{
-		$stmt = $this->_con->prepare($sql);
-
 		$types = '';
+		$binds = array();
 		if (is_array($params)) {
-			foreach ($params as $v) {
+			foreach ($params as $k => &$v) {
+				$binds[] = &$params[$k];
 				$type = strtolower(gettype($v));
 				if ($type === 'integer') {
 					$types .= 'i';
@@ -47,24 +48,37 @@ class MysqliDriver extends DBDriver
 				}
 			}
 		}
-		$stmt->bind_param($types, $params);
-		$stmt->execute();
-		$result = $stmt->result_metadata();
 
-		$resultArray = array();
-		while ($field = $result->fetch_fields()) {
-			foreach ($field as $v) {
-				$resultArray[] = $v;
-			}
+		$stmt = $this->_con->prepare($sql);
+
+		if (!$stmt) {
+			throwError('SQL error:' . $this->_con->error, 500, true, 'error_db');
 		}
 
+		//多参数动态绑定
+		call_user_func_array(array($stmt, 'bind_param'), array_merge(array($types), $binds));
+		$ex = $stmt->execute();
+		//$metadata = $stmt->result_metadata();
+		$metadata = $stmt->get_result();
 
+
+		$this->fieldCount = $stmt->field_count;
+		$this->numRows = $stmt->num_rows;
 		$this->affectedRows = $stmt->affected_rows;
-		$stmt->close();
-		if (empty($resultArray)) {
-			return $this->affectedRows;
+
+		if (is_object($metadata)) {
+			$result = array();
+			while ($field = $metadata->fetch_array()) {
+				$result[] = $field;
+			}
+			$metadata->close();
+		} else {
+			$result = $this->affectedRows;
 		}
-		return $resultArray;
+
+		$stmt->close();
+
+		return $result;
 	}
 
 
@@ -88,6 +102,7 @@ class MysqliDriver extends DBDriver
 	public function rollback()
 	{
 		if ($this->_con->rollback()) {
+			$this->_con->autocommit(true);
 			return true;
 		} else {
 			return false;

@@ -53,13 +53,14 @@ class Config
 		$file = str_replace('.php', '', $file) . '.php';
 
 		if (empty($file)) {
-			Long_Exception::showError('Wrong file name', 503);
+			throwError('Wrong file name', 503,true);
 		}
 
 		$filePath = APP_PATH . DIRECTORY_SEPARATOR . 'config/' . $file;
 
 		if (!file_exists($filePath)) {
-			Long_Exception::showError('File ' . $file . 'doesn\'t exists', 503);
+			throwError('File ' . $file . 'doesn\'t exists', 503,true);
+			exit(1);
 		} else {
 			if (isset(self::$isLoaded[$file])) {
 				return true;

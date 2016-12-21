@@ -39,6 +39,10 @@ abstract class DBDriver
 
 	public $queryResult;
 
+	public $fieldCount = 0;
+
+	public $numRows = 0;
+
 	public function __construct()
 	{
 		$this->_host = Config::get('db_host');

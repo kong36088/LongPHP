@@ -20,14 +20,19 @@ class TestController extends Long_Controller
 	{
 		ob_start();
 		parent::__construct();
+		/*
 		$this->testConfig();
 		$this->testRender();
 		$this->testUrl();
 		//$this->testError();
 		//$this->testException();
+		$this->testModel();
+		*/
 		ob_end_flush();
 	}
-	public function index(){
+
+	public function index()
+	{
 		echo Input::get('a');
 		echo 'this is index method';
 	}
@@ -53,24 +58,32 @@ class TestController extends Long_Controller
 		$this->output(Url::siteUrl('https') . PHP_EOL, 'raw');
 	}
 
-	public function testLog(){
+	public function testLog()
+	{
 		Log::writeLog('Test Error', 'ERROR');
 		Log::writeLog('Test DEBUG', 'DEBUG');
 		Log::writeLog('Test INFO', 'INFO');
 	}
 
-	public function testError(){
+	public function testError()
+	{
 		//测试捕获异常
 		new EmptyClass();
 	}
 
-	public function testException(){
+	public function testException()
+	{
 		//测试Exception
 		throw new \Exception('Test  Exception');
 	}
 
-	public function testModel(){
+	public function testModel()
+	{
 		$model = M('test');
-		print_r($model->query('SELECT * FROM USER'));
+		print_r($model->getById(4));
+		var_dump($model->insertTestData());
+		var_dump($model->deleteTestData(2));
+		var_dump($model->updateTestData(1,'测试'));
+		var_dump($model->transTestData());
 	}
 }

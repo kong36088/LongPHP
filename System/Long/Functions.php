@@ -124,11 +124,15 @@ if (!function_exists('exceptionHandler')) {
 	}
 }
 if (!function_exists('throwError')) {
-	function throwError($message = '', $status_code = 500)
+	function throwError($message = '', $status_code = 500, $isExit = true, $template = 'error_general')
 	{
-		\Long\Long_Exception::showError($message, $status_code);
+		\Long\Log\Log::writeLog($message, 'error');
 
-		exit(1);
+		\Long\Long_Exception::showError($message, $status_code, $template);
+
+		if ($isExit) {
+			exit(1);
+		}
 	}
 }
 
@@ -141,10 +145,10 @@ if (!function_exists('M')) {
 
 		//判断文件是否存在
 		if (!file_exists($filePath)) {
-			Long\Long_Exception::showError('Model ' . $name . 'does not exist');
+			throwError('Model ' . $name . 'does not exist');
 		}
-		$controller = 'Model\\' . $modelName;
-		$M = new $controller();
+		$model = 'Model\\' . $modelName;
+		$M = new $model();
 		return $M;
 	}
 }

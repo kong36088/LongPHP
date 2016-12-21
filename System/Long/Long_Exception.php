@@ -53,12 +53,11 @@ class Long_Exception
 		$buffer = ob_get_contents();
 		ob_end_flush();
 		echo $buffer;
-
-		exit(1);
 	}
 
 	public static function showError($message, $status_code = 200, $template = 'error_general', $heading = '出错')
 	{
+
 		$templatesPath = VIEW_PATH . DIRECTORY_SEPARATOR . 'errors' . DIRECTORY_SEPARATOR;
 
 		if (is_cli()) {
@@ -69,6 +68,8 @@ class Long_Exception
 			$message = '<p>' . (is_array($message) ? implode('</p><p>', $message) : $message) . '</p>';
 			$template = 'html' . DIRECTORY_SEPARATOR . $template;
 		}
+
+
 
 		ob_start();
 		include($templatesPath . $template . '.php');

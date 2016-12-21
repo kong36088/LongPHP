@@ -76,6 +76,7 @@ class Long_Router
 	{
 		if (empty($appRequest['controller']) || empty($appRequest['method'])) {
 			Long_Exception::show404();
+			exit(1);
 		}
 		$controllerName = ucfirst($appRequest['controller']) . 'Controller';
 		$controllerFile = ucfirst($appRequest['controller']) . 'Controller.php';
@@ -86,12 +87,14 @@ class Long_Router
 		//判断文件是否存在
 		if (!file_exists($filePath)) {
 			Long_Exception::show404();
+			exit(1);
 		}
 		$controller = 'Controllers\\' . $controllerName;
 		$C = new $controller();
 
 		if (!method_exists($C, $callMethod) || !is_callable(array($C, $callMethod))) {
 			Long_Exception::show404();
+			exit(1);
 		}
 		$C->$callMethod();
 	}
