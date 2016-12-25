@@ -22,8 +22,5 @@ Long\Config\Config::initialize();
 //初始化输入类
 \Long\Input\Input::initialize();
 
-//测试类
-new \Controllers\TestController();
-
 //路由器初始化
 \Long\Long_Router::initialize();
