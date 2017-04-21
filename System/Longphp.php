@@ -16,11 +16,11 @@ set_exception_handler('exceptionHandler');
 
 
 //load configuration
-Long\Config\Config::initialize();
+Long\Core\Config::initialize();
 
 
 //init input class
-Long\Input\Input::initialize();
+Long\Library\Input::initialize();
 
 //router
-Long\Long_Router::initialize();
+Long\Core\Long_Router::initialize();

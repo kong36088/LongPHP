@@ -7,7 +7,7 @@
 namespace Model;
 
 
-use Long\Long_Model;
+use Long\Core\Long_Model;
 
 class TestModel extends Long_Model
 {

@@ -7,7 +7,7 @@
 namespace Long\Database;
 
 
-use Long\Config\Config;
+use Long\Core\Config;
 
 abstract class DBDriver
 {

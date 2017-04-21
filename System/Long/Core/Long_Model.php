@@ -6,7 +6,6 @@
 
 namespace Long\Core;
 
-use Long\Config\Config;
 use Long\Log\Log;
 
 class Long_Model

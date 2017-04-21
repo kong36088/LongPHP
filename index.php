@@ -53,21 +53,21 @@ $viewPath = $applicationPath.DIRECTORY_SEPARATOR.'View';
 
 $cachePath = 'cache';
 
-define('SELF', __FILE__);
+defined('SELF') or define('SELF', __FILE__);
 
-define('SYS_PATH', rtrim($longphpPath, '/\\'));
+defined('SYS_PATH') or define('SYS_PATH', rtrim($longphpPath, '/\\'));
 
-define('APP_PATH', rtrim($applicationPath, '/\\'));
+defined('APP_PATH') or define('APP_PATH', rtrim($applicationPath, '/\\'));
 
-define('VIEW_PATH', APP_PATH . DIRECTORY_SEPARATOR . 'View');
+defined('VIEW_PATH') or define('VIEW_PATH', APP_PATH . DIRECTORY_SEPARATOR . 'View');
 
-define('BASE_PATH', dirname(__FILE__));
+defined('BASE_PATH') or define('BASE_PATH', dirname(__FILE__));
 
-define('CACHE_PATH',$cachePath);
+defined('CACHE_PATH') or define('CACHE_PATH',$cachePath);
 
 //利用composer进行自动加载管理
 require_once BASE_PATH . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
-require_once SYS_PATH . DIRECTORY_SEPARATOR . '/Longphp.php';
+require_once SYS_PATH . DIRECTORY_SEPARATOR . 'Longphp.php';
 
 

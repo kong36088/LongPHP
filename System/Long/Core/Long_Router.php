@@ -6,15 +6,13 @@
 
 namespace Long\Core;
 
-
-use Long\Config\Config;
 use Long\Log\Log;
 
 class Long_Router
 {
 	public static function initialize()
 	{
-		if (is_cli()) {
+		if (isCli()) {
 			self::_commandLine();
 		}
 		Log::writeLog('Router init, request URI ' . $_SERVER['REQUEST_URI'], 'INFO');

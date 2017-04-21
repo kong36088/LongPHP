@@ -4,10 +4,9 @@
  * Author: William Jiang
  */
 
-namespace Long\Core\Config;
+namespace Long\Core;
 
 use Long\Log\Log;
-use Long\Core\Long_Exception;
 
 class Config
 {

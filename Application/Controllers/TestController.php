@@ -7,11 +7,12 @@
 
 namespace Controllers;
 
-use Long\Input\Input;
+use Long\Library\Input;
 use Long\Log\Log;
 use Long\Long_Controller;
 use Long\Long_Exception;
-use Long\Url\Url;
+use Long\Library\Url;
+use Long\Core\Config;
 
 class TestController extends Long_Controller
 {
@@ -44,7 +45,7 @@ class TestController extends Long_Controller
 
 	public function testConfig()
 	{
-		print_r(\Long\Config\Config::get());
+		print_r(Config::get());
 	}
 
 	public function testOutput()

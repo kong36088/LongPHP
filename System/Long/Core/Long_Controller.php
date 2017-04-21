@@ -7,7 +7,7 @@
 namespace Long\Core;
 
 use Long\Log\Log;
-use Long\Output\Output;
+use Long\Library\Output;
 use Philo\Blade\Blade;
 
 class Long_Controller

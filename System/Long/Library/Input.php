@@ -4,7 +4,7 @@
  * Author: William Jiang
  */
 
-namespace Long\Input;
+namespace Long\Library;
 
 
 class Input

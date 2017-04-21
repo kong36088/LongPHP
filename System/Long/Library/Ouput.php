@@ -4,7 +4,7 @@
  * Author: William Jiang
  */
 
-namespace Long\Output;
+namespace Long\Library;
 
 
 class Output

@@ -1,22 +1,21 @@
 <?php
 /**
  * Longphp
- * Author: William Jiang
+ * Author: William Jiang <william@jwlchian.cn>
  */
 
-namespace Long\Url;
-
-use Long\Config\Config;
+namespace Long\Library;
 
 class Url
 {
-	/**
-	 * 获取网站url
-	 * @param string $protocol
-	 */
+    /**
+     * get the url of your site
+     * @param string $protocol
+     * @return bool|string
+     */
 	public static function siteUrl($protocol = '')
 	{
-		if (is_cli()) return '';
+		if (isCli()) return '';
 		$baseUrl = rtrim(Config::get('base_url'), '/');
 		$baseUrl = substr($baseUrl, strpos($baseUrl, '//') + 2);
 

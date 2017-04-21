@@ -36,7 +36,7 @@ class Long_Exception
 		$template = 'error_404';
 		$templatesPath = VIEW_PATH . DIRECTORY_SEPARATOR . 'errors' . DIRECTORY_SEPARATOR;
 
-		if (is_cli()) {
+		if (isCli()) {
 			$template = 'cli' . DIRECTORY_SEPARATOR . $template;
 			$heading = 'Not Found';
 			$message = 'The controller/method pair you requested was not found.';
@@ -60,7 +60,7 @@ class Long_Exception
 
 		$templatesPath = VIEW_PATH . DIRECTORY_SEPARATOR . 'errors' . DIRECTORY_SEPARATOR;
 
-		if (is_cli()) {
+		if (isCli()) {
 			$message = "\t" . (is_array($message) ? implode("\n\t", $message) : $message);
 			$template = 'cli' . DIRECTORY_SEPARATOR . $template;
 		} else {
@@ -91,7 +91,7 @@ class Long_Exception
 			$message = '(null)';
 		}
 
-		if (is_cli()) {
+		if (isCli()) {
 			$templates_path .= 'cli' . DIRECTORY_SEPARATOR;
 		} else {
 			setHeader(500);

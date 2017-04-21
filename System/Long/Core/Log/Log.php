@@ -32,7 +32,7 @@ class Log
 		$logLevel = (int)Config::get('log_level');
 		$level = strtoupper($level);
 
-		//判断记录等级
+		//to judge log level
 		if (!isset(self::$_levels[$level]) || self::$_levels[$level] > $logLevel) {
 			return false;
 		}

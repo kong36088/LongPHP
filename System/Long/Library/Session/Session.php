@@ -4,7 +4,7 @@
  * Author: William Jiang
  */
 
-namespace Long\Session;
+namespace Long\Library\Session;
 
 
 class Session

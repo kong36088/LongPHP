@@ -6,13 +6,13 @@ defined('BASE_PATH') OR exit('No direct script access allowed');
  */
 
 
-if (!function_exists('is_cli')) {
+if (!function_exists('isCli')) {
 	/**
 	 * 判断是否为cli访问
 	 *
 	 * @return bool
 	 */
-	function is_cli()
+	function isCli()
 	{
 		return defined('STDIN') || PHP_SAPI === 'cli' ? true : false;
 	}
@@ -24,7 +24,7 @@ if (!function_exists('setHeader')) {
 	 */
 	function setHeader($code = 200)
 	{
-		if (is_cli()) return;
+		if (isCli()) return;
 		$code = intval($code);
 		$status = array(
 			100 => 'Continue',
@@ -92,11 +92,11 @@ if (!function_exists('errorHandler')) {
 	{
 		$is_error = (((E_ERROR | E_USER_ERROR | E_COMPILE_ERROR | E_CORE_ERROR | E_USER_ERROR) & $severity) === $severity);
 
-		\Long\Long_Exception::logError($severity, $errMsg, $errFile, $errLine);
+        Long\Core\Long_Exception::logError($severity, $errMsg, $errFile, $errLine);
 
 		if (($severity & error_reporting()) !== $severity) return;
 
-		\Long\Long_Exception::showError($errMsg);
+        Long\Core\Long_Exception::showError($errMsg);
 		/**
 		 * 判断是否为致命错误
 		 */
@@ -115,10 +115,10 @@ if (!function_exists('exceptionHandler')) {
 	 */
 	function exceptionHandler($exception)
 	{
-		\Long\Long_Exception::logError('error', $exception->getMessage(), $exception->getFile(), $exception->getLine());
+		Long\Core\Long_Exception::logError('error', $exception->getMessage(), $exception->getFile(), $exception->getLine());
 
 		if (str_ireplace(array('off', 'none', 'no', 'false', 'null'), '', ini_get('display_errors'))) {
-			\Long\Long_Exception::showException($exception);
+            Long\Core\Long_Exception::showException($exception);
 		}
 		exit(1);
 	}
@@ -126,9 +126,9 @@ if (!function_exists('exceptionHandler')) {
 if (!function_exists('throwError')) {
 	function throwError($message = '', $status_code = 500, $isExit = true, $template = 'error_general')
 	{
-		\Long\Log\Log::writeLog($message, 'error');
+		Long\Log\Log::writeLog($message, 'error');
 
-		\Long\Long_Exception::showError($message, $status_code, $template);
+        Long\Core\Long_Exception::showError($message, $status_code, $template);
 
 		if ($isExit) {
 			exit(1);
