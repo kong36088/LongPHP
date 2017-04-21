@@ -8,9 +8,9 @@
 namespace Controllers;
 
 use Long\Library\Input;
-use Long\Log\Log;
-use Long\Long_Controller;
-use Long\Long_Exception;
+use Long\Core\Log;
+use Long\Core\Long_Controller;
+use Long\Core\Long_Exception;
 use Long\Library\Url;
 use Long\Core\Config;
 
@@ -21,14 +21,14 @@ class TestController extends Long_Controller
 	{
 		ob_start();
 		parent::__construct();
-		/*
+
 		$this->testConfig();
 		$this->testRender();
 		$this->testUrl();
 		//$this->testError();
 		//$this->testException();
 		$this->testModel();
-		*/
+
 		ob_end_flush();
 	}
 

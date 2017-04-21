@@ -6,7 +6,7 @@
 
 namespace Long\Database;
 
-use Long\Long_Exception;
+use Long\Core\Long_Exception;
 
 class MysqliDriver extends DBDriver
 {
@@ -20,7 +20,7 @@ class MysqliDriver extends DBDriver
 
 		$this->_con = new \mysqli($this->_host, $this->_user, $this->_password, $this->_database, $this->_port);
 
-		if ($this->_con->connect_errno) {
+		if (!$this->_con || $this->_con->connect_errno) {
 			throwError("Connect failed: " . $this->_con->connect_error, 500, true, 'error_db');
 			exit(1);
 		}

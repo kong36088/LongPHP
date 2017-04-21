@@ -6,8 +6,6 @@
 
 namespace Long\Core;
 
-use Long\Log\Log;
-
 class Long_Model
 {
 	protected $tableName = '';

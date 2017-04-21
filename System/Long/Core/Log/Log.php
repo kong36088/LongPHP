@@ -4,10 +4,8 @@
  * Author: William Jiang
  */
 
-namespace Long\Log;
+namespace Long\Core;
 
-
-use Long\Core\Config;
 
 class Log
 {
@@ -29,7 +27,7 @@ class Log
 	 */
 	public static function writeLog($message, $level)
 	{
-		$logLevel = (int)Config::get('log_level');
+		$logLevel = (int) Config::get('log_level');
 		$level = strtoupper($level);
 
 		//to judge log level

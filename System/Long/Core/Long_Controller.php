@@ -6,7 +6,6 @@
 
 namespace Long\Core;
 
-use Long\Log\Log;
 use Long\Library\Output;
 use Philo\Blade\Blade;
 
@@ -19,20 +18,20 @@ class Long_Controller
 	protected $_class = array();
 
 	/**
-	 * 保存已加载过的命名空间
+	 * loaded class
 	 * @var array
 	 */
 	protected $_loaded = array();
 
 	public function __construct()
 	{
-		Log::writeLog('Init Controller', 'INFO');
+		Log::writeLog('Init Controller '.__CLASS__, 'INFO');
 	}
 
 	/**
 	 * 渲染模版文件
 	 * @param string $bladeFile blade文件路径
-	 * @param array $params 需要assign的数据
+	 * @param array $params the data being assigned
 	 */
 	public function render($bladeFile, $params = array())
 	{
@@ -43,7 +42,7 @@ class Long_Controller
 
 	/**
 	 * @param string|array $data
-	 * @param string $type 输出类型
+	 * @param string $type output type
 	 */
 	public function output($data, $type = 'RAW')
 	{
@@ -60,11 +59,12 @@ class Long_Controller
 		}
 	}
 
-	/**
-	 * 加载外部类放入类属性中
-	 * @param string $class 类的命名空间
-	 * @return bool
-	 */
+    /**
+     * 加载外部类放入类属性中
+     * @param string $class the class name with namespace
+     * @param array $params
+     * @return bool
+     */
 	protected function _load($class, $params = array())
 	{
 		if (isset($this->_loaded[$class])) {

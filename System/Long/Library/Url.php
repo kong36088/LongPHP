@@ -6,6 +6,8 @@
 
 namespace Long\Library;
 
+use Long\Core\Config;
+
 class Url
 {
     /**

@@ -8,7 +8,7 @@ defined('BASE_PATH') OR exit('No direct script access allowed');
 /**
  * 系统部署域名
  */
-$config['base_url'] = '';
+$config['base_url'] = 'vm/';
 
 /**
  * 日志等级
