@@ -4,7 +4,7 @@
  * Author: William Jiang
  */
 
-namespace Long;
+namespace Long\Core;
 
 use Long\Log\Log;
 use Long\Output\Output;

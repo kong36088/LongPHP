@@ -4,20 +4,23 @@
  * Author: William Jiang
  */
 
-namespace Long\Config;
+namespace Long\Core\Config;
 
 use Long\Log\Log;
-use Long\Long_Exception;
+use Long\Core\Long_Exception;
 
 class Config
 {
-	//保存加载的配置项
+    /**
+     * the loaded config options
+     * @var array
+     */
 	protected static $configItem = array();
 
 	protected static $isLoaded = array();
 
 	/**
-	 * 自动加载配置文件
+	 * init function ,load autoload config files
 	 */
 	public static function initialize()
 	{
@@ -44,7 +47,7 @@ class Config
 	}
 
 	/**
-	 * 加载配置文件
+	 * to load config files, mark put in $isLoaded
 	 * @param string $file
 	 * @return bool
 	 */

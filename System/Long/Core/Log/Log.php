@@ -7,7 +7,7 @@
 namespace Long\Log;
 
 
-use Long\Config\Config;
+use Long\Core\Config;
 
 class Log
 {

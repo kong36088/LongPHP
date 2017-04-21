@@ -3,7 +3,7 @@
  * Longphp
  * Author: William Jiang
  */
-namespace Long;
+namespace Long\Core;
 
 use Long\Log\Log;
 

@@ -7,20 +7,20 @@ defined('BASE_PATH') OR exit('No direct script access allowed');
 
 define('LONGPHP_VERSION', '1.0');
 
-//引入常用方法
-require SYS_PATH . DIRECTORY_SEPARATOR . 'Long/Functions.php';
+//to require common functions
+require SYS_PATH . '/Long/Common/Functions.php';
 
-//设置错误处理
+//set error handler
 set_error_handler('errorHandler');
 set_exception_handler('exceptionHandler');
 
 
-//加载配置文件
+//load configuration
 Long\Config\Config::initialize();
 
 
-//初始化输入类
-\Long\Input\Input::initialize();
+//init input class
+Long\Input\Input::initialize();
 
-//路由器初始化
-\Long\Long_Router::initialize();
+//router
+Long\Long_Router::initialize();
