@@ -7,9 +7,9 @@
 namespace Model;
 
 
-use Long\Core\Long_Model;
+use Long\Core\LongModel;
 
-class TestModel extends Long_Model
+class TestModel extends LongModel
 {
 	public function getById($id = 1)
 	{

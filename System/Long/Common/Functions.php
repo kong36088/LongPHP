@@ -92,11 +92,11 @@ if (!function_exists('errorHandler')) {
 	{
 		$is_error = (((E_ERROR | E_USER_ERROR | E_COMPILE_ERROR | E_CORE_ERROR | E_USER_ERROR) & $severity) === $severity);
 
-        Long\Core\Long_Exception::logError($severity, $errMsg, $errFile, $errLine);
+        Long\Core\LongException::logError($severity, $errMsg, $errFile, $errLine);
 
 		if (($severity & error_reporting()) !== $severity) return;
 
-        Long\Core\Long_Exception::showError($errMsg);
+        Long\Core\LongException::showError(["Error message: $errMsg","Error File:$errFile","Error Line:$errLine"]);
 		/**
 		 * 判断是否为致命错误
 		 */
@@ -115,10 +115,10 @@ if (!function_exists('exceptionHandler')) {
 	 */
 	function exceptionHandler($exception)
 	{
-		Long\Core\Long_Exception::logError('error', $exception->getMessage(), $exception->getFile(), $exception->getLine());
+		Long\Core\LongException::logError('error', $exception->getMessage(), $exception->getFile(), $exception->getLine());
 
 		if (str_ireplace(array('off', 'none', 'no', 'false', 'null'), '', ini_get('display_errors'))) {
-            Long\Core\Long_Exception::showException($exception);
+            Long\Core\LongException::showException($exception);
 		}
 		exit(1);
 	}
@@ -128,7 +128,7 @@ if (!function_exists('throwError')) {
 	{
 		Long\Core\Log::writeLog($message, 'error');
 
-        Long\Core\Long_Exception::showError($message, $status_code, $template);
+        Long\Core\LongException::showError($message, $status_code, $template);
 
 		if ($isExit) {
 			exit(1);

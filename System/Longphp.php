@@ -23,4 +23,4 @@ Long\Core\Config::initialize();
 Long\Library\Input::initialize();
 
 //router
-Long\Core\Long_Router::initialize();
+Long\Core\LongRouter::initialize();

@@ -9,43 +9,49 @@ namespace Controllers;
 
 use Long\Library\Input;
 use Long\Core\Log;
-use Long\Core\Long_Controller;
-use Long\Core\Long_Exception;
+use Long\Core\LongController;
+use Long\Library\Logger;
 use Long\Library\Url;
 use Long\Core\Config;
 
-class TestController extends Long_Controller
+class TestController extends LongController
 {
 
 	public function __construct()
 	{
-		ob_start();
-		parent::__construct();
+        parent::__construct();
+        $TestController = new \ReflectionClass('Controllers\TestController');
+        $o = $TestController->newInstanceWithoutConstructor();
+        $methods = $TestController->getMethods(\ReflectionMethod::IS_PUBLIC);
 
+        foreach ($methods as $k => $method){
+            if($method->isPublic()&&!$method->isConstructor()) {
+                $method->invokeArgs($o,[]);
+            }
+        }
+		/*
 		$this->testConfig();
 		$this->testRender();
 		$this->testUrl();
 		//$this->testError();
 		//$this->testException();
 		$this->testModel();
-
-		ob_end_flush();
+        */
 	}
 
 	public function index()
 	{
-		echo Input::get('a');
-		echo 'this is index method';
+        echo Input::get('a');
 	}
 
 	public function testRender()
 	{
-		$this->render('test', ['test' => 'test here']);
+		//$this->render('test', ['test' => 'test here']);
 	}
 
-	public function testConfig()
+	protected function testConfig()
 	{
-		print_r(Config::get());
+		//print_r(Config::get());
 	}
 
 	public function testOutput()
@@ -66,13 +72,13 @@ class TestController extends Long_Controller
 		Log::writeLog('Test INFO', 'INFO');
 	}
 
-	public function testError()
+	protected function testError()
 	{
 		//测试捕获异常
 		new EmptyClass();
 	}
 
-	public function testException()
+    protected function testException()
 	{
 		//测试Exception
 		throw new \Exception('Test  Exception');
@@ -87,4 +93,9 @@ class TestController extends Long_Controller
 		var_dump($model->updateTestData(1,'测试'));
 		var_dump($model->transTestData());
 	}
+
+	public function testLogger(){
+	    $Logger = new Logger();
+	    $Logger->info("abc");
+    }
 }

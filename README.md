@@ -1,4 +1,4 @@
-# Longphp
+# LongPHP
 A PHP MVC framework
 
 # Documentation

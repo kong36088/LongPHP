@@ -1,6 +1,6 @@
 <?php
 /**
- * Sys
+ * LongPHP
  * Author: William Jiang
  */
 
@@ -69,5 +69,4 @@ defined('CACHE_PATH') or define('CACHE_PATH',$cachePath);
 require_once BASE_PATH . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
 require_once SYS_PATH . DIRECTORY_SEPARATOR . 'Longphp.php';
-
 

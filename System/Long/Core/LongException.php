@@ -6,7 +6,9 @@
 namespace Long\Core;
 
 
-class Long_Exception
+use Long\Library\Url;
+
+class LongException
 {
 
 	public static $levels = array(
@@ -50,7 +52,7 @@ class Long_Exception
 		ob_start();
 		include($templatesPath . $template . '.php');
 		$buffer = ob_get_contents();
-		ob_end_flush();
+		ob_end_clean();
 		echo $buffer;
 	}
 

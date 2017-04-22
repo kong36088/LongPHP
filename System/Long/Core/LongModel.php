@@ -6,7 +6,7 @@
 
 namespace Long\Core;
 
-class Long_Model
+class LongModel
 {
 	protected $tableName = '';
 

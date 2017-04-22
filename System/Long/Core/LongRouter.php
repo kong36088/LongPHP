@@ -6,7 +6,7 @@
 
 namespace Long\Core;
 
-class Long_Router
+class LongRouter
 {
 	public static function initialize()
 	{
@@ -71,7 +71,7 @@ class Long_Router
 	public static function handler(Array $appRequest)
 	{
 		if (empty($appRequest['controller']) || empty($appRequest['method'])) {
-			Long_Exception::show404();
+			LongException::show404();
 			exit(1);
 		}
 		$controllerName = ucfirst($appRequest['controller']) . 'Controller';
@@ -82,14 +82,14 @@ class Long_Router
 
 		//判断文件是否存在
 		if (!file_exists($filePath)) {
-			Long_Exception::show404();
+			LongException::show404();
 			exit(1);
 		}
 		$controller = 'Controllers\\' . $controllerName;
 		$C = new $controller();
 
 		if (!method_exists($C, $callMethod) || !is_callable(array($C, $callMethod))) {
-			Long_Exception::show404();
+			LongException::show404();
 			exit(1);
 		}
 		$C->$callMethod();
