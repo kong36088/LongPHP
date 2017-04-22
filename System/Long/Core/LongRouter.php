@@ -6,22 +6,42 @@
 
 namespace Long\Core;
 
+
+/**
+ * Class LongRouter
+ * @package Long\Core
+ */
 class LongRouter
 {
+    /**
+     * factory instance
+     * @var
+     */
+    protected static $instance;
+
+    protected $defaultController;
+
+    protected $defaultMethod;
+
 	public static function initialize()
 	{
+	    $instance = self::getInstance();
 		if (isCli()) {
-			self::_commandLine();
+            $instance->_commandLine();
 		}
 		Log::writeLog('Router init, request URI ' . $_SERVER['REQUEST_URI'], 'INFO');
 
+		//init vars
+        $instance->defaultController = Config::get('default_controller');
+        $instance->defaultMethod = Config::get('default_method');
 
-		$appRequest = self::_router();
-		//分发路由
-		self::handler($appRequest);
+
+		$appRequest = $instance->_router();
+		//call controller
+        $instance->handler($appRequest);
 	}
 
-	protected static function _commandLine()
+	protected function _commandLine()
 	{
 		$_SERVER['REQUEST_URI'] = "";
 		foreach ($_SERVER['argv'] as $k => $v) {
@@ -31,21 +51,21 @@ class LongRouter
 	}
 
 	/**
-	 * 处理路由
+	 * handle uri
+     *
 	 * @return array
 	 */
-	protected static function _router()
+	protected function _router()
 	{
-		$uri = $_SERVER['REQUEST_URI'];
-		$filePath = SELF;
+		$urlPath = $_SERVER['REQUEST_URI'];
+		$filePath = $_SERVER['PHP_SELF'];
 		$documentPath = $_SERVER['DOCUMENT_ROOT'];
 
 		$appPath = str_replace($documentPath, '', $filePath);
-		$urlPath = $uri;
 
 		$appPathArr = explode(DIRECTORY_SEPARATOR, $appPath);
 
-		//获取出真实的请求控制器方法等
+		//get the real controller and method
 		foreach ($appPathArr as $k => $v) {
 			if ($v) {
 				$urlPath = preg_replace('/^\/' . $v . '\/?/', '/', $urlPath, 1);
@@ -55,20 +75,23 @@ class LongRouter
 
 		$appPathArr = explode('/', $urlPath);
 
-		//去除参数
+		//trim the parameters
+        if(!empty($appPathArr[0])){
+            $appPathArr[0] = preg_replace('/(\?.*)$/', '', $appPathArr[0]);
+        }
 		if (!empty($appPathArr[1])) {
 			$appPathArr[1] = preg_replace('/(\?.*)$/', '', $appPathArr[1]);
 		}
 		$appRequest = array(
-			'controller' => empty($appPathArr[0]) ? Config::get('default_controller') : $appPathArr[0],
-			'method' => empty($appPathArr[1]) ? Config::get('default_method') : $appPathArr[1],
+			'controller' => empty($appPathArr[0]) ? $this->defaultController : $appPathArr[0],
+			'method' => empty($appPathArr[1]) ? $this->defaultMethod : $appPathArr[1],
 		);
 
 		return $appRequest;
 	}
 
 
-	public static function handler(Array $appRequest)
+	protected function handler(Array $appRequest)
 	{
 		if (empty($appRequest['controller']) || empty($appRequest['method'])) {
 			LongException::show404();
@@ -88,11 +111,25 @@ class LongRouter
 		$controller = 'Controllers\\' . $controllerName;
 		$C = new $controller();
 
+		//invoke constructor
+        if(method_exists($C,'initialize') && is_callable($C,'initialize')){
+            $C->initialize();
+        }
+
+		//method invoke
 		if (!method_exists($C, $callMethod) || !is_callable(array($C, $callMethod))) {
 			LongException::show404();
 			exit(1);
 		}
 		$C->$callMethod();
 	}
+
+    /**
+     * @return object
+     */
+    public static function getInstance()
+    {
+        return empty(self::$instance)?(self::$instance = new self()):self::$instance;
+    }
 
 }

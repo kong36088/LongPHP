@@ -53,7 +53,7 @@ $viewPath = $applicationPath.DIRECTORY_SEPARATOR.'View';
 
 $cachePath = 'cache';
 
-defined('SELF') or define('SELF', __FILE__);
+defined('SELF') or define('SELF', pathinfo(__FILE__, PATHINFO_BASENAME));
 
 defined('SYS_PATH') or define('SYS_PATH', rtrim($longphpPath, '/\\'));
 
