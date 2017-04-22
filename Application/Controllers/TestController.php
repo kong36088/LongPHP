@@ -7,12 +7,12 @@
 
 namespace Controllers;
 
+use Long\Core\Config;
 use Long\Library\Input;
 use Long\Core\Log;
 use Long\Core\LongController;
 use Long\Library\Logger;
 use Long\Library\Url;
-use Long\Core\Config;
 
 class TestController extends LongController
 {
@@ -29,40 +29,38 @@ class TestController extends LongController
                 $method->invokeArgs($o,[]);
             }
         }
-		/*
-		$this->testConfig();
-		$this->testRender();
-		$this->testUrl();
-		//$this->testError();
-		//$this->testException();
-		$this->testModel();
-        */
+
 	}
+
+	public function initialize(){
+	    $this->_output("initMethod<br>");
+    }
 
 	public function index()
 	{
         echo Input::get('a');
+        echo "index method called<br>";
 	}
 
 	public function testRender()
 	{
-		//$this->render('test', ['test' => 'test here']);
+		$this->_render('test', ['test' => 'test here']);
 	}
 
 	protected function testConfig()
 	{
-		//print_r(Config::get());
+		print_r(Config::get());
 	}
 
 	public function testOutput()
 	{
-		$this->output(['testdata1' => 'data1', 'testdata2' => 'data2'], 'json');
-		$this->output('raw data test' . PHP_EOL, 'raw');
+		$this->_output(['testdata1' => 'data1', 'testdata2' => 'data2'], 'json');
+		$this->_output('raw data test<br>' . PHP_EOL, 'raw');
 	}
 
 	public function testUrl()
 	{
-		$this->output(Url::siteUrl('https') . PHP_EOL, 'raw');
+		$this->_output(Url::siteUrl('https') . PHP_EOL, 'raw');
 	}
 
 	public function testLog()

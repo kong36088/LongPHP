@@ -33,18 +33,18 @@ class LongController
      * @param string $bladeFile blade文件路径
      * @param array $params the data being assigned
      */
-    protected function render($bladeFile, $params = array())
+    protected function _render($bladeFile, $params = array())
     {
         $blade = new Blade(VIEW_PATH, CACHE_PATH);
         $html = $blade->view()->make($bladeFile, $params)->render();
-        $this->output($html, 'html');
+        $this->_output($html, 'html');
     }
 
     /**
      * @param string|array $data
      * @param string $type output type
      */
-    protected function output($data, $type = 'RAW')
+    protected function _output($data, $type = 'RAW')
     {
         $type = strtoupper($type);
 
