@@ -28,7 +28,7 @@ server
     listen       80;
     server_name  www.example.com;
     index index.shtml index.html index.htm index.php;
-    root  /path/to/PHPWebIM/client;
+    root  /path/to/root/Longphp;
      location / {
         try_files $uri $uri/ =404;
         if (!-e $request_filename)
@@ -42,7 +42,7 @@ server
         fastcgi_index index.php;
         include fastcgi.conf;
     }
-    access_log  /Library/WebServer/nginx/logs/im.swoole.com  access;
+    access_log  /var/log/Longphp/access.log  access;
 }
 ```
 If your project is not in the root directory
@@ -69,7 +69,7 @@ server
         fastcgi_index index.php;
         include fastcgi.conf;
     }
-    access_log  /Library/WebServer/nginx/logs/im.swoole.com  access;
+    access_log  /var/log/Longphp/access.log  access;
 }
 ```
 
@@ -78,7 +78,7 @@ server
 ``` apacheconfig
 <VirtualHost *:80>
     DocumentRoot "/path/to/Longphp"
-    ServerName im.swoole.com
+    ServerName www.example.com
     AddType application/x-httpd-php .php
     <Directory />
         Options Indexes FollowSymLinks
