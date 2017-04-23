@@ -17,11 +17,13 @@ class LongRouter
      * factory instance
      * @var
      */
-    protected static $instance;
+    private static $_instance;
 
-    protected $defaultController;
+    protected $_defaultController;
 
-    protected $defaultMethod;
+    protected $_defaultMethod;
+
+    protected $_controllerPath;
 
 	public static function initialize()
 	{
@@ -32,13 +34,14 @@ class LongRouter
 		Log::writeLog('Router init, request URI ' . $_SERVER['REQUEST_URI'], 'INFO');
 
 		//init vars
-        $instance->defaultController = Config::get('default_controller');
-        $instance->defaultMethod = Config::get('default_method');
+        $instance->_defaultController = Config::get('default_controller');
+        $instance->_defaultMethod = Config::get('default_method');
+        $instance->_controllerPath = Config::get('application_path') . '\\Controller\\';
 
 
 		$appRequest = $instance->_router();
 		//call controller
-        $instance->handler($appRequest);
+        $instance->_handler($appRequest);
 	}
 
 	protected function _commandLine()
@@ -83,23 +86,24 @@ class LongRouter
 			$appPathArr[1] = preg_replace('/(\?.*)$/', '', $appPathArr[1]);
 		}
 		$appRequest = array(
-			'controller' => empty($appPathArr[0]) ? $this->defaultController : $appPathArr[0],
-			'method' => empty($appPathArr[1]) ? $this->defaultMethod : $appPathArr[1],
+			'controller' => empty($appPathArr[0]) ? $this->_defaultController : $appPathArr[0],
+			'method' => empty($appPathArr[1]) ? $this->_defaultMethod : $appPathArr[1],
 		);
 
 		return $appRequest;
 	}
 
 
-	protected function handler(Array $appRequest)
+	protected function _handler(Array $appRequest)
 	{
 		if (empty($appRequest['controller']) || empty($appRequest['method'])) {
 			LongException::show404();
 			exit(1);
 		}
-		$controllerName = ucfirst($appRequest['controller']) . 'Controller';
+
+        $controllerName = ucfirst($appRequest['controller']) . 'Controller';
 		$controllerFile = ucfirst($appRequest['controller']) . 'Controller.php';
-		$filePath = APP_PATH . DIRECTORY_SEPARATOR . 'Controllers' . DIRECTORY_SEPARATOR . $controllerFile;
+		$filePath = APP_PATH . DIRECTORY_SEPARATOR . 'Controller' . DIRECTORY_SEPARATOR . $controllerFile;
 
 		$callMethod = $appRequest['method'];
 
@@ -109,7 +113,7 @@ class LongRouter
 			exit(1);
 		}
 		//TODO 修改namespace
-		$controller = 'Controllers\\' . $controllerName;
+		$controller = $this->_controllerPath . $controllerName;
 		$C = new $controller();
 
 		//invoke constructor
@@ -130,7 +134,7 @@ class LongRouter
      */
     public static function getInstance()
     {
-        return empty(self::$instance)?(self::$instance = new self()):self::$instance;
+        return empty(self::$_instance)?(self::$_instance = new self()):self::$_instance;
     }
 
 }

@@ -5,7 +5,7 @@
  * Author: William Jiang
  */
 
-namespace Controllers;
+namespace Application\Controller;
 
 use Application\Library\MyLibrary;
 use Long\Core\Config;
@@ -25,7 +25,7 @@ class TestController extends LongController
         MyLibrary::libraryOutput();
         //print_r($this->_loaded);exit;
 
-        $TestController = new \ReflectionClass('Controllers\TestController');
+        $TestController = new \ReflectionClass('Application\Controller\TestController');
         $o = self::getInstance();
         $methods = $TestController->getMethods(\ReflectionMethod::IS_PUBLIC);
 
