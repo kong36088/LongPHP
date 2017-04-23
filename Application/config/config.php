@@ -26,3 +26,8 @@ $config['log_level'] = 4;
 $config['log_path'] = APP_PATH . DIRECTORY_SEPARATOR . 'logs/';
 
 $config['blade_ext'] = '.blade.php';
+
+/**
+ * the location of your application
+ */
+$config['application_path'] = 'Application';

@@ -152,3 +152,18 @@ if (!function_exists('M')) {
 		return $M;
 	}
 }
+
+
+if(!function_exists('getInstance')){
+    /**
+     * Reference to the LongController method.
+     *
+     * Returns current Long instance object
+     *
+     * @return \Long\Core\LongController
+     */
+    function &getInstance()
+    {
+        return \Long\Core\LongController::getInstance();
+    }
+}

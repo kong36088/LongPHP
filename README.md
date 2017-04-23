@@ -1,5 +1,5 @@
 # LongPHP
-A PHP MVC framework
+A light PHP MVC framework
 
 # Documentation
 
@@ -8,6 +8,17 @@ This is powered by Blade, some help here:https://laravel.com/docs/5.3/blade
 $this->render('your/blade', array('your' => 'variables'));
 ```
 
+Please make sure you have the right access root of the project.
+``` bash
+chmod -R 0755 /Path/to/Longphp
+chmod -R 0644 /Path/to/Longphp/cache
+chmod -R 0644 /Path/to/Longphp/Application/logs
+```
+
+After writing your own Library/Controller(etc), please make sure you have run this command:
+``` bash
+composer dump-autoload
+```
 # Install
 
 ``` bash
@@ -17,6 +28,7 @@ composer install
 # Requirements
 
 `php >= 5.6`
+`composer`
 
 # Ningx/Apache
 

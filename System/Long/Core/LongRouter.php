@@ -108,6 +108,7 @@ class LongRouter
 			LongException::show404();
 			exit(1);
 		}
+		//TODO 修改namespace
 		$controller = 'Controllers\\' . $controllerName;
 		$C = new $controller();
 

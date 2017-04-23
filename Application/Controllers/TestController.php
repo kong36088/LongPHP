@@ -7,6 +7,7 @@
 
 namespace Controllers;
 
+use Application\Library\MyLibrary;
 use Long\Core\Config;
 use Long\Library\Input;
 use Long\Core\Log;
@@ -20,8 +21,12 @@ class TestController extends LongController
 	public function __construct()
 	{
         parent::__construct();
+
+        MyLibrary::libraryOutput();
+        //print_r($this->_loaded);exit;
+
         $TestController = new \ReflectionClass('Controllers\TestController');
-        $o = $TestController->newInstanceWithoutConstructor();
+        $o = self::getInstance();
         $methods = $TestController->getMethods(\ReflectionMethod::IS_PUBLIC);
 
         foreach ($methods as $k => $method){
@@ -65,6 +70,7 @@ class TestController extends LongController
 
 	public function testLog()
 	{
+	    echo "Test write log<br>";
 		Log::writeLog('Test Error', 'ERROR');
 		Log::writeLog('Test DEBUG', 'DEBUG');
 		Log::writeLog('Test INFO', 'INFO');
@@ -84,7 +90,7 @@ class TestController extends LongController
 
 	public function testModel()
 	{
-		$model = M('test');
+		$model = $this->_model('testModel');
 		print_r($model->getById(4));
 		var_dump($model->insertTestData());
 		var_dump($model->deleteTestData(2));

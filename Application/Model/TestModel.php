@@ -4,7 +4,7 @@
  * Author: William Jiang
  */
 
-namespace Model;
+namespace Application\Model;
 
 
 use Long\Core\LongModel;

@@ -11,6 +11,8 @@ use Philo\Blade\Blade;
 
 class LongController
 {
+
+    private static $_instance;
     /**
      * 用于保存已加载的外部类
      * @var array
@@ -23,13 +25,40 @@ class LongController
      */
     protected $_loaded = array();
 
+    /**
+     * to store the loaded models
+     * @var array
+     */
+    protected $_models = array();
+
+    /**
+     * Library path according to configuration
+     * @var string
+     */
+    protected $_libraryPath;
+
+    /**
+     * Model path according to configuration
+     * @var string
+     */
+    protected $_modelPath;
+
     public function __construct()
     {
+        self::$_instance = &$this;
+        $this->_libraryPath = Config::get('application_path') . '\\Library';
+        $this->_modelPath = Config::get('application_path') . '\\Model';
+
         Log::writeLog('Init Controller ' . __CLASS__, 'INFO');
     }
 
+    public static function &getInstance()
+    {
+        return self::$_instance;
+    }
+
     /**
-     * 渲染模版文件
+     * render templates using blade
      * @param string $bladeFile blade文件路径
      * @param array $params the data being assigned
      */
@@ -61,8 +90,34 @@ class LongController
     }
 
     /**
+     * To load model
+     * @param string $className model class name
+     * @param array $args
+     * @param string $namespace the namespace of model
+     * @return object
+     */
+    protected function &_model($className, $args = array(), $namespace = ''){
+        if(empty($namespace)){
+            $namespace = $this->_modelPath;
+        }
+
+        $className = ucfirst($className);
+        
+        $namespace = trim($namespace,'\\\/');
+        $fullClassName = $namespace . '\\' . $className;
+
+        if(isset($this->_models[$fullClassName])){
+            return $this->_models[$fullClassName];
+        }
+
+        $ReflectionClass = new \ReflectionClass($fullClassName);
+        $this->_models[$fullClassName] = $ReflectionClass->newInstance($args);
+        return $this->_models[$fullClassName];
+    }
+
+    /**
      * 加载外部类放入类属性中
-     * TODO 重写为反射方式加载
+     * TODO abandoned
      * @param string $class the class name with namespace
      * @param array $params
      * @return bool
