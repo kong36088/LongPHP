@@ -16,8 +16,6 @@ class MysqliDriver extends DBDriver
 	{
 		parent::__construct();
 
-		//TODO 不能插入中文
-
 		$this->_con = new \mysqli($this->_host, $this->_user, $this->_password, $this->_database, $this->_port);
 
 		if (!$this->_con || $this->_con->connect_errno) {

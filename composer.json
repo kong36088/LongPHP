@@ -4,7 +4,8 @@
         "philo/laravel-blade": "3.*",
         "psr/log": "1.*",
         "php": ">=5.5",
-        "phpunit/phpunit": "5.* || 6.*"
+        "phpunit/phpunit": "5.* || 6.*",
+        "codeguy/upload": "1.*"
     },
     "authors": [
         {

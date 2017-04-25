@@ -114,29 +114,4 @@ class LongController
         $this->_models[$fullClassName] = $ReflectionClass->newInstance($args);
         return $this->_models[$fullClassName];
     }
-
-    /**
-     * 加载外部类放入类属性中
-     * TODO abandoned
-     * @param string $class the class name with namespace
-     * @param array $params
-     * @return bool
-     */
-    protected function _load($class, $params = array())
-    {
-        if (isset($this->_loaded[$class])) {
-            return true;
-        }
-
-        $newClass = new $class(...$params);
-        $className = '_' . substr($class, strpos($class, '\\'));
-        if (isset($newClass)) {
-            $this->_loaded[$class] = $class;
-            $this->$className = $newClass;
-            return true;
-        } else {
-            return false;
-        }
-
-    }
 }

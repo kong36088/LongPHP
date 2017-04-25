@@ -7,7 +7,6 @@
 namespace Long\Library;
 
 /**
- * TODO 完善模块，错误处理等
  * Class Output
  * @package Long\Library
  */
@@ -15,6 +14,7 @@ class Output
 {
 	public static function raw($data)
 	{
+	    header("Content-type:text/plain");
         echo (string)$data;
 
 	}
@@ -24,11 +24,13 @@ class Output
 	 */
 	public static function json($data)
 	{
-		echo json_encode($data);
+        header("Content-type:application/json");
+        echo json_encode($data);
 	}
 
 	public static function html($data)
 	{
+	    header("Content-type:text/html");
 		echo $data;
 	}
 }

@@ -12,7 +12,7 @@ use Long\Core\Config;
 use Long\Library\Input;
 use Long\Core\Log;
 use Long\Core\LongController;
-use Long\Library\Logger;
+use Long\Library\Logger\Logger;
 use Long\Library\Url;
 
 class TestController extends LongController
@@ -99,7 +99,6 @@ class TestController extends LongController
 	}
 
 	public function testLogger(){
-	    $Logger = new Logger();
-	    $Logger->info("abc");
+	    Logger::warning("test warning");
     }
 }
