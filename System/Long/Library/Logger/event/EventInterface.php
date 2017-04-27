@@ -13,7 +13,7 @@ namespace Long\Library\Logger;
  * TODO 完善log event
  *
  * Interface EventInterface
- * @package Long\Library\Logger
+ * @package Long\Library\Log
  */
 interface EventInterface
 {

@@ -6,13 +6,15 @@
 
 namespace Long\Core;
 
+use Long\Library\Logger\Log;
+
 class LongModel
 {
 	protected $tableName = '';
 
 	public function __construct()
 	{
-		Log::writeLog('Init Model', 'info');
+		Log::info('Init Model');
 
 		$dbDriver = 'Long\\Database\\' . ucfirst(Config::get('db_driver')) . 'Driver';
 		$dbDriverFile = SYS_PATH . DIRECTORY_SEPARATOR . 'Long/Database/'.ucfirst(Config::get('db_driver')) . 'Driver.php';

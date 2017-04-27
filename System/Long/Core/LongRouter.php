@@ -6,6 +6,7 @@
 
 namespace Long\Core;
 
+use Long\Library\Logger\Log;
 
 /**
  * Class LongRouter
@@ -31,7 +32,7 @@ class LongRouter
 		if (isCli()) {
             $instance->_commandLine();
 		}
-		Log::writeLog('Router init, request URI ' . $_SERVER['REQUEST_URI'], 'INFO');
+		Log::info('Router init, request URI ' . $_SERVER['REQUEST_URI']);
 
 		//init vars
         $instance->_defaultController = Config::get('default_controller');

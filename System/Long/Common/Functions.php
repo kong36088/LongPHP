@@ -126,7 +126,7 @@ if (!function_exists('exceptionHandler')) {
 if (!function_exists('throwError')) {
 	function throwError($message = '', $status_code = 500, $isExit = true, $template = 'error_general')
 	{
-		Long\Core\Log::writeLog($message, 'error');
+		Long\Library\Logger\Log::error($message);
 
         Long\Core\LongException::showError($message, $status_code, $template);
 

@@ -6,6 +6,8 @@
 
 namespace Long\Core;
 
+use Long\Library\Logger\Log;
+
 class Config
 {
     /**
@@ -75,7 +77,7 @@ class Config
 			self::$isLoaded[$file] = true;
 			self::$configItem = array_merge(self::$configItem, $config);
 		}
-		Log::writeLog('Load config file ' . $file, 'INFO');
+		Log::info('Load config file ' . $file);
 		return true;
 	}
 

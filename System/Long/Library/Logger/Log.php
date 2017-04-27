@@ -12,7 +12,7 @@ namespace Long\Library\Logger;
 use Long\Core\Config;
 use Psr\Log\LogLevel;
 
-class Logger extends AbstractLogger
+class Log extends AbstractLogger
 {
     const EMERGENCY = 'emergency';
     const ALERT     = 'alert';
@@ -48,8 +48,6 @@ class Logger extends AbstractLogger
      */
     public static function log($level, $message, array $context = array())
     {
-        // TODO: Implement log() method.
-
         $logLevel = (int) Config::get('log_level');
 
         //to judge log level
@@ -68,8 +66,7 @@ class Logger extends AbstractLogger
 
         flock($fp, LOCK_EX);
 
-        $date = date(self::$_dateFormat);
-        $message = LogFormatter::formatLogMessage($message, $level, $date);
+        $message = LogFormatter::formatLogMessage($message, $level);
         for ($written = 0; $written < strlen($message); $written += $fwrite) {
             $fwrite = fwrite($fp, substr($message, $written));
             if ($fwrite === false) {

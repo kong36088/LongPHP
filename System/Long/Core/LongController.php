@@ -8,6 +8,8 @@ namespace Long\Core;
 
 use Long\Library\Output;
 use Philo\Blade\Blade;
+use Long\Library\Logger\Log;
+
 
 class LongController
 {
@@ -49,7 +51,7 @@ class LongController
         $this->_libraryPath = Config::get('application_path') . '\\Library';
         $this->_modelPath = Config::get('application_path') . '\\Model';
 
-        Log::writeLog('Init Controller ' . __CLASS__, 'INFO');
+        Log::info('Init Controller ' . __CLASS__);
     }
 
     public static function &getInstance()

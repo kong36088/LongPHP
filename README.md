@@ -28,7 +28,7 @@ LongPHP is powered by composer, which can help you extend your application by us
 ## Logging
 
 ``` php
-use Long\Library\Logger\Logger; //to import logger
+use Long\Library\Logger\Log; //to import logger
 
 ....
 

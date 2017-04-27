@@ -13,18 +13,28 @@ class LogFormatter
 {
     protected static $_dateFormat = 'Y-m-d H:i:s';
 
+    protected static $_logFormat = '%s : %s  %s' . PHP_EOL;
     /**
-     * TODO 自定义日志格式
      * 返回格式化的记录内容
      * @param $message
      * @param $level
-     * @param $date
      * @return string
      */
-    public static function formatLogMessage($message, $level, $date)
+    public static function formatLogMessage($message, $level)
     {
-        $line = strtoupper($level) . ':' . $date . '  ' . $message . PHP_EOL;
-        return $line;
+        $level = strtoupper($level);
+        $date = date(self::$_dateFormat);
+        $logMsg = sprintf(self::$_logFormat,$level,$date,$message);
+        return $logMsg;
+    }
+
+
+    /**
+     * @return string
+     */
+    public static function getDateFormat()
+    {
+        return self::$_dateFormat;
     }
 
     /**
@@ -34,4 +44,22 @@ class LogFormatter
     {
         self::$_dateFormat = $dateFormat;
     }
+
+    /**
+     * @return string
+     */
+    public static function getLogFormat()
+    {
+        return self::$_logFormat;
+    }
+
+    /**
+     * @param string $logFormat
+     */
+    public static function setLogFormat($logFormat)
+    {
+        self::$_logFormat = $logFormat;
+    }
+
+
 }

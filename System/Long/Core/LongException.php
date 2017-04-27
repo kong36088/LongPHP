@@ -6,7 +6,7 @@
 namespace Long\Core;
 
 
-use Long\Library\Url;
+use Long\Library\Logger\Log;
 
 class LongException
 {
@@ -29,7 +29,7 @@ class LongException
 	public static function logError($severity, $errMsg, $errFile, $errLine)
 	{
 		$severity = isset(self::$levels[$severity]) ? self::$levels[$severity] : $severity;
-		Log::writeLog('Severity: ' . $severity . ' --> ' . $errMsg . ' ' . $errFile . ' ' . $errLine, 'ERROR');
+		Log::error('Severity: ' . $severity . ' --> ' . $errMsg . ' ' . $errFile . ' ' . $errLine);
 	}
 
 	public static function show404()
@@ -47,7 +47,7 @@ class LongException
 			$message = 'The page you requested was not found.';
 			setHeader(404);
 		}
-		Log::writeLog($message, 'error');
+		Log::error($message);
 
 		ob_start();
 		include($templatesPath . $template . '.php');

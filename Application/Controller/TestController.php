@@ -10,9 +10,8 @@ namespace Application\Controller;
 use Application\Library\MyLibrary;
 use Long\Core\Config;
 use Long\Library\Input;
-use Long\Core\Log;
 use Long\Core\LongController;
-use Long\Library\Logger\Logger;
+use Long\Library\Logger\Log;
 use Long\Library\Url;
 
 class TestController extends LongController
@@ -68,14 +67,6 @@ class TestController extends LongController
 		$this->_output(Url::siteUrl('https') . PHP_EOL, 'raw');
 	}
 
-	public function testLog()
-	{
-	    echo "Test write log<br>";
-		Log::writeLog('Test Error', 'ERROR');
-		Log::writeLog('Test DEBUG', 'DEBUG');
-		Log::writeLog('Test INFO', 'INFO');
-	}
-
 	protected function testError()
 	{
 		//测试捕获异常
@@ -99,6 +90,6 @@ class TestController extends LongController
 	}
 
 	public function testLogger(){
-	    Logger::warning("test warning");
+	    Log::warning("test warning");
     }
 }
