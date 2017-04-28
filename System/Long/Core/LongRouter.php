@@ -33,7 +33,7 @@ class LongRouter
 		if (isCli()) {
             $instance->_commandLine();
 		}
-		Log::info('Router init, request URI ' . $_SERVER['REQUEST_URI']);
+		Log::debug('Router init, request URI ' . $_SERVER['REQUEST_URI']);
 
 		//init vars
         $instance->_defaultController = Config::get('default_controller');

@@ -51,7 +51,7 @@ class LongController
         $this->_libraryPath = Config::get('application_path') . '\\Library';
         $this->_modelPath = Config::get('application_path') . '\\Model';
 
-        Log::info('Init Controller ' . __CLASS__);
+        Log::debug('Init Controller ' . __CLASS__);
     }
 
     public static function &getInstance()
