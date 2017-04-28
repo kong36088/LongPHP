@@ -20,7 +20,7 @@ class TestController extends LongController
 	public function __construct()
 	{
         parent::__construct();
-
+        /*
         MyLibrary::libraryOutput();
         //print_r($this->_loaded);exit;
 
@@ -33,7 +33,7 @@ class TestController extends LongController
                 $method->invokeArgs($o,[]);
             }
         }
-
+*/
 	}
 
 	public function initialize(){

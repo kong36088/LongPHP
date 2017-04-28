@@ -15,8 +15,8 @@ $config['base_url'] = 'vm/';
  *
  * 0 全部都不记录
  * 1 只记录error级别
- * 2 记录error和info级别
- * 3 记录error、info、debug级别
+ * 2 记录error、warning、notice级别
+ * 3 记录error、warning、notice、info级别
  * 4 记录所有级别
  */
 $config['log_level'] = 4;

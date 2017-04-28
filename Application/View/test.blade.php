@@ -1,3 +1,5 @@
 this is a Test
 
-{{$test}}
+<br/>
+
+<h1>{{$test}}</h1>

@@ -7,6 +7,7 @@ namespace Long\Core;
 
 
 use Long\Library\Logger\Log;
+use Long\Library\Url;
 
 class LongException
 {
@@ -47,7 +48,8 @@ class LongException
 			$message = 'The page you requested was not found.';
 			setHeader(404);
 		}
-		Log::error($message);
+		//TODO 改善日志格式
+		Log::error($message . Url::siteUrl());
 
 		ob_start();
 		include($templatesPath . $template . '.php');
