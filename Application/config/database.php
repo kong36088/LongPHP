@@ -1,6 +1,6 @@
 <?php
 /**
- * Longphp
+ * LongPHP
  * Author: William Jiang
  */
 

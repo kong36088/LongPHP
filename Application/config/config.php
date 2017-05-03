@@ -1,33 +1,70 @@
 <?php
 defined('BASE_PATH') OR exit('No direct script access allowed');
 /**
- * Longphp
+ * LongPHP
  * Author: William Jiang
  */
 
 /**
- * 系统部署域名
+ *  -------------------------------------------------------------
+ * |System config                                               |
+ *  -------------------------------------------------------------
+ *
+ * base_url
+ * The Host of your application
+ * Example: www.php.net
  */
 $config['base_url'] = 'vm/';
 
+
 /**
- * 日志等级
+ *  -------------------------------------------------------------
+ * |Log config                                               |
+ *  -------------------------------------------------------------
  *
- * 0 全部都不记录
- * 1 只记录error级别
- * 2 记录error、warning、notice级别
- * 3 记录error、warning、notice、info级别
- * 4 记录所有级别
+ * Log Levels
+ *
+ * LogLevel::EMERGENCY => 1,
+ * LogLevel::ALERT => 1,
+ * LogLevel::CRITICAL => 1,
+ * LogLevel::ERROR => 1,
+ * LogLevel::WARNING => 2,
+ * LogLevel::NOTICE => 2,
+ * LogLevel::INFO => 3,
+ * LogLevel::DEBUG =>4
+ *
+ * 0 Don't do any log
+ * 1 Log only error
+ * 2 Log error、warning、notice
+ * 3 error、warning、notice、info
+ * 4 Log all
  */
 $config['log_level'] = 4;
 /**
- * 日志路径目录
+ * The log path
  */
 $config['log_path'] = APP_PATH . DIRECTORY_SEPARATOR . 'logs/';
 
 $config['blade_ext'] = '.blade.php';
 
 /**
- * the location of your application
+ * location of your application
  */
 $config['application_path'] = 'Application';
+
+
+/**
+ *  -------------------------------------------------------------
+ * |Session config                                               |
+ *  -------------------------------------------------------------
+ *
+ * Configuring session driver
+ *
+ * Alternative: file database
+ */
+$config['session_driver'] = 'file';
+
+/**
+ * session_path leave blank to use default
+ */
+$config['session_path'] = 'Framework/session';
