@@ -99,7 +99,7 @@ class LongRouter
 	protected function _handler(Array $appRequest)
 	{
 		if (empty($appRequest['controller']) || empty($appRequest['method'])) {
-			LongException::show404();
+			LongExceptionHandle::show404();
 			exit(1);
 		}
 
@@ -111,7 +111,7 @@ class LongRouter
 
 		//判断文件是否存在
 		if (!file_exists($filePath)) {
-			LongException::show404();
+			LongExceptionHandle::show404();
 			exit(1);
 		}
 
@@ -125,7 +125,7 @@ class LongRouter
 
 		//method invoke
 		if (!method_exists($C, $callMethod) || !is_callable(array($C, $callMethod))) {
-			LongException::show404();
+			LongExceptionHandle::show404();
 			exit(1);
 		}
 		$C->$callMethod();

@@ -6,7 +6,7 @@
 
 namespace Long\Database;
 
-use Long\Core\LongException;
+use Long\Core\LongExceptionHandle;
 
 class MysqliDriver extends DBDriver
 {

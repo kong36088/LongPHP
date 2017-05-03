@@ -9,6 +9,7 @@ namespace Application\Controller;
 
 use Application\Library\MyLibrary;
 use Long\Core\Config;
+use Long\Core\LongException;
 use Long\Library\Input;
 use Long\Core\LongController;
 use Long\Library\Logger\Log;
@@ -20,7 +21,7 @@ class TestController extends LongController
 	public function __construct()
 	{
         parent::__construct();
-        /*
+
         MyLibrary::libraryOutput();
         //print_r($this->_loaded);exit;
 
@@ -33,7 +34,7 @@ class TestController extends LongController
                 $method->invokeArgs($o,[]);
             }
         }
-*/
+
 	}
 
 	public function initialize(){
@@ -76,7 +77,7 @@ class TestController extends LongController
     protected function testException()
 	{
 		//测试Exception
-		throw new \Exception('Test  Exception');
+		throw new LongException('Test  Exception');
 	}
 
 	public function testModel()

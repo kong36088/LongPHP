@@ -92,11 +92,11 @@ if (!function_exists('errorHandler')) {
 	{
 		$is_error = (((E_ERROR | E_USER_ERROR | E_COMPILE_ERROR | E_CORE_ERROR | E_USER_ERROR) & $severity) === $severity);
 
-        Long\Core\LongException::logError($severity, $errMsg, $errFile, $errLine);
+        Long\Core\LongExceptionHandle::logError($severity, $errMsg, $errFile, $errLine);
 
 		if (($severity & error_reporting()) !== $severity) return;
 
-        Long\Core\LongException::showError(["Error message: $errMsg","Error File:$errFile","Error Line:$errLine"]);
+        Long\Core\LongExceptionHandle::showError(["Error message: $errMsg","Error File:$errFile","Error Line:$errLine"]);
 		/**
 		 * 判断是否为致命错误
 		 */
@@ -115,10 +115,10 @@ if (!function_exists('exceptionHandler')) {
 	 */
 	function exceptionHandler($exception)
 	{
-		Long\Core\LongException::logError('error', $exception->getMessage(), $exception->getFile(), $exception->getLine());
+		Long\Core\LongExceptionHandle::logError('error', $exception->getMessage(), $exception->getFile(), $exception->getLine());
 
 		if (str_ireplace(array('off', 'none', 'no', 'false', 'null'), '', ini_get('display_errors'))) {
-            Long\Core\LongException::showException($exception);
+            Long\Core\LongExceptionHandle::showException($exception);
 		}
 		exit(1);
 	}
@@ -128,7 +128,7 @@ if (!function_exists('throwError')) {
 	{
 		Long\Library\Logger\Log::error($message);
 
-        Long\Core\LongException::showError($message, $status_code, $template);
+        Long\Core\LongExceptionHandle::showError($message, $status_code, $template);
 
 		if ($isExit) {
 			exit(1);
@@ -165,5 +165,28 @@ if(!function_exists('getInstance')){
     function &getInstance()
     {
         return \Long\Core\LongController::getInstance();
+    }
+}
+
+
+if ( ! function_exists('isPHP'))
+{
+    /**
+     * Determines if the current version of PHP is equal to or greater than the supplied value
+     *
+     * @param	string
+     * @return	bool	TRUE if the current version is $version or higher
+     */
+    function isPHP($version)
+    {
+        static $_isPHP;
+        $version = (string) $version;
+
+        if ( ! isset($_isPHP[$version]))
+        {
+            $_isPHP[$version] = version_compare(PHP_VERSION, $version, '>=');
+        }
+
+        return $_isPHP[$version];
     }
 }
