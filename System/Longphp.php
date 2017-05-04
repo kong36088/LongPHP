@@ -22,8 +22,9 @@ Long\Core\Config::initialize();
 //init input class
 Long\Library\Input::initialize();
 
+//session
+Long\Library\Session\LongSession::initialize();
+
 //router
 Long\Core\LongRouter::initialize();
 
-//session
-Long\Library\Session\LongSession::initialize();

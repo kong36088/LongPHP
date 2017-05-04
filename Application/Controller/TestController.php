@@ -7,7 +7,6 @@
 
 namespace Application\Controller;
 
-use Application\Library\MyLibrary;
 use Long\Core\Config;
 use Long\Core\LongException;
 use Long\Library\Input;
@@ -63,7 +62,7 @@ class TestController extends LongController
 	public function testOutput()
 	{
 		$this->_output(['testdata1' => 'data1', 'testdata2' => 'data2'], 'json');
-		$this->_output('raw data test<br>' . PHP_EOL, 'raw');
+		//$this->_output('raw data test<br>' . PHP_EOL, 'raw');
 	}
 
 	public function testUrl()
@@ -101,6 +100,12 @@ class TestController extends LongController
 	    LongSession::set('test_data',123);
 	    $data = LongSession::get('test_data');
 	    var_dump($data);
+	    //LongSession::destroy();
+        LongSession::batchSet(['test1'=>'data1','test2'=>'data2']);
+        var_dump(LongSession::all());
+        echo '<br/>';
+        var_dump(LongSession::pull('test1'));
+        LongSession::remove('test2');
     }
 
 }

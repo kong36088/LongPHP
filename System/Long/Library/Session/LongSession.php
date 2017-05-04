@@ -18,14 +18,13 @@ class LongSession implements LongSessionInterface
 
     public static function initialize()
     {
-        //TODO PHP SESSIONID iniset
         //load configs
-        self::$_driver = empty(Config::get('session_driver'))?Config::get('session_driver'):'file';
+        self::$_driver = empty(Config::get('session_driver')) ? Config::get('session_driver') : 'file';
 
         //configure session
         self::_configure();
 
-        $sessionDriver = __NAMESPACE__.'\Session' . ucfirst(self::$_driver) . 'Driver';
+        $sessionDriver = __NAMESPACE__ . '\Session' . ucfirst(self::$_driver) . 'Driver';
 
         $sessionDriver = new $sessionDriver(Config::getAll());
         if ($sessionDriver instanceof \SessionHandlerInterface) {
@@ -44,26 +43,29 @@ class LongSession implements LongSessionInterface
      *
      * Handle input parameters and configuration defaults
      *
-     * @return	void
+     * @return    void
      */
     protected static function _configure()
     {
 
         $expiration = Config::get('session_expiration');
+        if (isset($params['cookie_lifetime'])) {
+            $params['cookie_lifetime'] = (int)$params['cookie_lifetime'];
+        } else {
+            $params['cookie_lifetime'] = (!isset($expiration)) ? 0 : (int)$expiration;
+        }
 
         isset($params['cookie_name']) OR $params['cookie_name'] = Config::get('session_cookie_name');
-        if (empty($params['cookie_name']))
-        {
+
+        if (empty($params['cookie_name'])) {
             $params['cookie_name'] = ini_get('session.name');
-        }
-        else
-        {
+        } else {
             ini_set('session.name', $params['cookie_name']);
         }
 
         isset($params['cookie_path']) OR $params['cookie_path'] = Config::get('cookie_path');
         isset($params['cookie_domain']) OR $params['cookie_domain'] = Config::get('cookie_domain');
-        isset($params['cookie_secure']) OR $params['cookie_secure'] = (bool) Config::get('cookie_secure');
+        isset($params['cookie_secure']) OR $params['cookie_secure'] = (bool)Config::get('cookie_secure');
 
         session_set_cookie_params(
             $params['cookie_lifetime'],
@@ -73,13 +75,10 @@ class LongSession implements LongSessionInterface
             TRUE // HttpOnly; Yes, this is intentional and not configurable for security reasons
         );
 
-        if (empty($expiration))
-        {
-            $params['expiration'] = (int) ini_get('session.gc_maxlifetime');
-        }
-        else
-        {
-            $params['expiration'] = (int) $expiration;
+        if (empty($expiration)) {
+            $params['expiration'] = (int)ini_get('session.gc_maxlifetime');
+        } else {
+            $params['expiration'] = (int)$expiration;
             ini_set('session.gc_maxlifetime', $expiration);
         }
 
@@ -191,7 +190,8 @@ class LongSession implements LongSessionInterface
      *
      * @return void
      */
-    public static function flush(){
+    public static function flush()
+    {
         session_destroy();
     }
 }

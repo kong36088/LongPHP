@@ -239,7 +239,7 @@ class SessionFileDriver extends SessionDriver implements \SessionHandlerInterfac
         }
 
         $sessionData = '';
-        for ($read = 0, $length = filesize($this->_filePath . $sessionId); $read < $length; $read += self::strlen($buffer)) {
+        for ($read = 0, $length = filesize($this->_filePath . $sessionId); $read < $length; $read += strlen($buffer)) {
             if (($buffer = fread($this->_fileHandle, $length - $read)) === FALSE) {
                 break;
             }
@@ -270,8 +270,6 @@ class SessionFileDriver extends SessionDriver implements \SessionHandlerInterfac
      */
     public function write($sessionId, $sessionData)
     {
-        echo $sessionId . '<br/>';
-        var_dump($sessionData);
         // If the two IDs don't match, we have a session_regenerate_id() call
         // and we need to close the old handle and open a new one
         if ($sessionId !== $this->_sessionId && ($this->close() === $this->_failure OR $this->read($sessionId) === $this->_failure)) {

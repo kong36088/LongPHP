@@ -71,7 +71,7 @@ $config['session_driver'] = 'file';
  */
 $config['session_path'] = BASE_PATH.'/Framework/session';
 
-$config['session_cookie_name'] = 'long_session';
+$config['session_cookie_name'] = 'LONG_SESSION';
 
 $config['session_expiration'] = 7200;
 
