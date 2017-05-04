@@ -9,9 +9,11 @@ namespace Application\Controller;
 
 use Long\Core\Config;
 use Long\Core\LongException;
+use Long\Library\Cookie;
 use Long\Library\Input;
 use Long\Core\LongController;
 use Long\Library\Logger\Log;
+use Long\Library\Output;
 use Long\Library\Session\LongSession;
 use Long\Library\Url;
 
@@ -106,6 +108,12 @@ class TestController extends LongController
         echo '<br/>';
         var_dump(LongSession::pull('test1'));
         LongSession::remove('test2');
+    }
+
+    public function testCookie(){
+        //Cookie::set('test_cookie','cookie value',100);
+        Cookie::remove('test_cookie');
+        echo Cookie::get('test_cookie');
     }
 
 }

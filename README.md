@@ -298,6 +298,24 @@ LongPHP automatically regenerates the session ID ; however, if you need to manua
 LongPHP::regenerate();
 ```
 
+## Cookie
+
+ Cookie opertations:
+
+``` php
+use Long\Library\Cookie
+
+...
+//retrive cookie
+echo Cookie::get('test_cookie');
+
+//set cookie
+Cookie::set('test_cookie','cookie value',100);
+
+//remove cookie
+Cookie::remove('test_cookie');
+```
+
 ## Log
 
 The levels of logger:

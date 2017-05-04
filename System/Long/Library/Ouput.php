@@ -14,7 +14,6 @@ class Output
 {
 	public static function raw($data)
 	{
-	    header("Content-type:text/plain");
         echo (string)$data;
 
 	}
@@ -33,4 +32,5 @@ class Output
 	    header("Content-type:text/html");
 		echo $data;
 	}
+
 }
