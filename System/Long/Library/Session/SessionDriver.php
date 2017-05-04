@@ -39,7 +39,7 @@ abstract Class SessionDriver implements \SessionHandlerInterface {
      */
     protected $_fingerprint;
 
-    public function __construct(array $params)
+    public function __construct(array $params = array())
     {
         $this->_config =& $params;
 

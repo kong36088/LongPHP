@@ -69,9 +69,13 @@ $config['session_driver'] = 'file';
 /**
  * session_path leave blank to use default
  */
-$config['session_path'] = 'Framework/session';
+$config['session_path'] = BASE_PATH.'/Framework/session';
 
 $config['session_cookie_name'] = 'long_session';
+
+$config['session_expiration'] = 7200;
+
+
 
 /**
  * --------------------------------------------------------------------------
@@ -88,7 +92,7 @@ $config['session_cookie_name'] = 'long_session';
  * 'cookie_httponly') will also affect sessions.
  *
  */
-$config['cookie_prefix'] = '';
+$config['cookie_prefix'] = 'long_';
 $config['cookie_domain'] = '';
 $config['cookie_path'] = '/';
 $config['cookie_secure'] = FALSE;

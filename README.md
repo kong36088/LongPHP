@@ -1,6 +1,17 @@
 # LongPHP
 A light PHP MVC framework
 
+## Install
+
+``` bash
+composer install
+```
+
+## Requirements
+
+`php >= 5.6`
+`composer`
+
 # Documentation
 
 
@@ -25,7 +36,65 @@ composer dump-autoload
 
 LongPHP is powered by composer, which can help you extend your application by using namespace.
 
-## Logging
+## Session
+
+### Introduction
+LongPHP provides session support.
+Support for session driver now:`file`,`database`.
+
+### Configuration
+
+THe configuration file is stored at `Application/config/config.php`
+
+|config|options|description|
+|:-----------:|:-----------:|:-----------:|
+|`session_driver`|file/database|Where to store session|
+|`session_path`| Framework/session |Session files location. Leave blank to use default|
+|`session_cookie_name`| |The session token store in browser|
+
+### Retrieving Data
+
+You can use `LongSession::get($key)` to retrieve data.
+
+Make sure that you have used the namespace `Long\Library\Session`
+``` php
+namespace Application\Controller;
+
+use Long\Library\Session;
+
+class UserController extends LongController
+{
+
+    public function show()
+    {
+        $value = LongSession::get('key');
+
+        //
+    }
+}
+```
+
+### Deleting Data
+
+The forget method will remove a piece of data from the session. If you would like to remove all data from the session, you may use the `flush` method:
+``` php
+//delete 'key'
+LongSession::remove('key');
+
+//Delete all data
+LongSession::flush();
+```
+
+### Regenerating The Session ID
+Regenerating the session ID is often done in order to prevent malicious users from exploiting a session fixation attack on your application.
+
+LongPHP automatically regenerates the session ID ; however, if you need to manually regenerate the session ID, you may use the  regenerate method.
+
+``` php
+LongPHP::regenerate();
+```
+
+## Log
 
 ``` php
 use Long\Library\Logger\Log; //to import logger
@@ -48,16 +117,6 @@ const DEBUG     = 'debug';
 
 You can call logging methods according to the `log level`
 
-# Install
-
-``` bash
-composer install
-```
-
-# Requirements
-
-`php >= 5.6`
-`composer`
 
 # Upload
 

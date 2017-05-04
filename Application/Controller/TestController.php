@@ -13,6 +13,7 @@ use Long\Core\LongException;
 use Long\Library\Input;
 use Long\Core\LongController;
 use Long\Library\Logger\Log;
+use Long\Library\Session\LongSession;
 use Long\Library\Url;
 
 class TestController extends LongController
@@ -22,6 +23,7 @@ class TestController extends LongController
 	{
         parent::__construct();
 
+        /*
         MyLibrary::libraryOutput();
         //print_r($this->_loaded);exit;
 
@@ -34,6 +36,7 @@ class TestController extends LongController
                 $method->invokeArgs($o,[]);
             }
         }
+        */
 
 	}
 
@@ -93,4 +96,11 @@ class TestController extends LongController
 	public function testLogger(){
 	    Log::warning("test warning");
     }
+
+    public function testSession(){
+	    LongSession::set('test_data',123);
+	    $data = LongSession::get('test_data');
+	    var_dump($data);
+    }
+
 }

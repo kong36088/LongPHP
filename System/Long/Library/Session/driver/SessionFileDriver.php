@@ -14,8 +14,14 @@ use Long\Library\Logger\Log;
 
 class SessionFileDriver extends SessionDriver implements \SessionHandlerInterface
 {
+    /**
+     * @var string
+     */
     protected $_filePath;
 
+    /**
+     * @var resource
+     */
     protected $_fileHandle = null;
 
     /**
@@ -32,7 +38,7 @@ class SessionFileDriver extends SessionDriver implements \SessionHandlerInterfac
      */
     protected $_fileNew;
 
-    public function __construct(&$params)
+    public function __construct($params = array())
     {
         parent::__construct($params);
 
@@ -43,6 +49,7 @@ class SessionFileDriver extends SessionDriver implements \SessionHandlerInterfac
             Log::debug('Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.');
             $this->_config['save_path'] = rtrim(ini_get('session.save_path'), '/\\');
         }
+        Log::debug('SessionFileDriver init');
     }
 
     /**
@@ -56,8 +63,7 @@ class SessionFileDriver extends SessionDriver implements \SessionHandlerInterfac
      */
     public function close()
     {
-        if (is_resource($this->_fileHandle))
-        {
+        if (is_resource($this->_fileHandle)) {
             flock($this->_fileHandle, LOCK_UN);
             fclose($this->_fileHandle);
 
@@ -79,25 +85,20 @@ class SessionFileDriver extends SessionDriver implements \SessionHandlerInterfac
      */
     public function destroy($sessionId)
     {
-        if ($this->close() === $this->_success)
-        {
-            if (file_exists($this->_filePath.$sessionId))
-            {
+        if ($this->close() === $this->_success) {
+            if (file_exists($this->_filePath . $sessionId)) {
                 $this->_cookieDestroy();
-                return unlink($this->_filePath.$sessionId)
+                return unlink($this->_filePath . $sessionId)
                     ? $this->_success
                     : $this->_failure;
             }
 
             return $this->_success;
-        }
-        elseif ($this->_filePath !== NULL)
-        {
+        } elseif ($this->_filePath !== NULL) {
             clearstatcache();
-            if (file_exists($this->_filePath.$sessionId))
-            {
+            if (file_exists($this->_filePath . $sessionId)) {
                 $this->_cookieDestroy();
-                return unlink($this->_filePath.$sessionId)
+                return unlink($this->_filePath . $sessionId)
                     ? $this->_success
                     : $this->_failure;
             }
@@ -172,6 +173,7 @@ class SessionFileDriver extends SessionDriver implements \SessionHandlerInterfac
      */
     public function open($savePath, $name)
     {
+        //TODO mkdir bug
         if (!is_dir($savePath)) {
             if (!mkdir($savePath, 0700, TRUE)) {
                 throw new LongException("Session: Configured save path '" . $this->_config['session_path'] . "' is not a directory, doesn't exist or cannot be created.");
@@ -183,7 +185,7 @@ class SessionFileDriver extends SessionDriver implements \SessionHandlerInterfac
         $this->_config['session_path'] = $savePath;
         $this->_filePath = $this->_config['session_path'] . DIRECTORY_SEPARATOR
             . $name // we'll use the session cookie name as a prefix to avoid collisions
-            . ($this->_config['match_ip'] ? md5($_SERVER['REMOTE_ADDR']) : '');
+            . md5($_SERVER['REMOTE_ADDR']);
 
         return $this->_success;
     }
@@ -222,7 +224,8 @@ class SessionFileDriver extends SessionDriver implements \SessionHandlerInterfac
             $this->_sessionId = $sessionId;
 
             if ($this->_fileNew) {
-                chmod($this->_filePath . $sessionId, 0600);
+                //TODO 权限修改为0600，mac下虚拟机存在权限控制的问题，待修复
+                chmod($this->_filePath . $sessionId, 0606);
                 $this->_fingerprint = md5('');
                 return '';
             }
@@ -267,6 +270,8 @@ class SessionFileDriver extends SessionDriver implements \SessionHandlerInterfac
      */
     public function write($sessionId, $sessionData)
     {
+        echo $sessionId . '<br/>';
+        var_dump($sessionData);
         // If the two IDs don't match, we have a session_regenerate_id() call
         // and we need to close the old handle and open a new one
         if ($sessionId !== $this->_sessionId && ($this->close() === $this->_failure OR $this->read($sessionId) === $this->_failure)) {

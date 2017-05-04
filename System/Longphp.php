@@ -24,3 +24,6 @@ Long\Library\Input::initialize();
 
 //router
 Long\Core\LongRouter::initialize();
+
+//session
+Long\Library\Session\LongSession::initialize();

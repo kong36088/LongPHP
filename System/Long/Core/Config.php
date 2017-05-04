@@ -14,9 +14,9 @@ class Config
      * the loaded config options
      * @var array
      */
-	protected static $configItem = array();
+	protected static $_configItems = array();
 
-	protected static $isLoaded = array();
+	protected static $_isLoaded = array();
 
 	/**
 	 * init function ,load autoload config files
@@ -35,14 +35,24 @@ class Config
 
 	public static function get($key = '')
 	{
-		if (empty($key)) return self::$configItem;
-		return isset(self::$configItem[$key]) ? self::$configItem[$key] : false;
+		if (empty($key)) return self::$_configItems;
+		return isset(self::$_configItems[$key]) ? self::$_configItems[$key] : false;
 	}
+
+
+    /**
+     * Get all config items
+     *
+     * @return array
+     */
+	public static function getAll(){
+	    return self::$_configItems;
+    }
 
 	public static function set($key = '', $value = '')
 	{
 		if (empty($key)) return;
-		self::$configItem[$key] = $value;
+		self::$_configItems[$key] = $value;
 	}
 
 	/**
@@ -64,7 +74,7 @@ class Config
 			throwError('File ' . $file . 'doesn\'t exists', 503,true);
 			exit(1);
 		} else {
-			if (isset(self::$isLoaded[$file])) {
+			if (isset(self::$_isLoaded[$file])) {
 				return true;
 			}
 
@@ -74,8 +84,8 @@ class Config
 				return false;
 			}
 
-			self::$isLoaded[$file] = true;
-			self::$configItem = array_merge(self::$configItem, $config);
+			self::$_isLoaded[$file] = true;
+			self::$_configItems = array_merge(self::$_configItems, $config);
 		}
 		Log::info('Load config file ' . $file);
 		return true;
