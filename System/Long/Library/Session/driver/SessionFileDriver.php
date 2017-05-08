@@ -132,7 +132,6 @@ class SessionFileDriver extends SessionDriver implements \SessionHandlerInterfac
             '/\A%s'.$this->_sidRegexp.'\z/',
             preg_quote($this->_config['session_cookie_name'])
         );
-        echo $pattern . '<br/>';
 
         while (($file = readdir($directory)) !== FALSE) {
             // If the filename doesn't match this pattern, it's either not a session file or is not ours

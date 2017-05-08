@@ -38,8 +38,6 @@ class LongSession implements LongSessionInterface
 
 
         session_start();
-
-        $sessionDriver->gc(Config::get('session_expiration'));
     }
 
     /**

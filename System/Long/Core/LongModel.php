@@ -6,11 +6,20 @@
 
 namespace Long\Core;
 
+use Long\Database\DBDriver;
 use Long\Library\Logger\Log;
 
 class LongModel
 {
-    protected $tableName = '';
+    /**
+     * Driver instance
+     *
+     * @var DBDriver
+     */
+    protected static $_db;
+    protected $db;
+
+    protected $_tableName = '';
 
     public function __construct()
     {
@@ -23,6 +32,10 @@ class LongModel
             throwError('Db driver type error', 500, true);
         }
 
-        $this->db = new $dbDriver();
+        //singleton
+        if (empty($_db)) {
+            self::$_db = new $dbDriver();
+        }
+        $this->db = & self::$_db;
     }
 }

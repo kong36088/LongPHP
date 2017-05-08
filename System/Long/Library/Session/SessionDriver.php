@@ -6,6 +6,8 @@
 
 namespace Long\Library\Session;
 
+use Long\Core\Config;
+
 /**
  * Class SessionDriver
  * @package Long\Library\SessionDriver
@@ -39,6 +41,14 @@ abstract Class SessionDriver implements \SessionHandlerInterface {
      */
     protected $_fingerprint;
 
+
+    /**
+     * Lock placeholder
+     *
+     * @var	mixed
+     */
+    protected $_lock = FALSE;
+
     public function __construct(array $params = array())
     {
         $this->_config =& $params;
@@ -54,6 +64,40 @@ abstract Class SessionDriver implements \SessionHandlerInterface {
             $this->_failure = -1;
         }
     }
+
+    /**
+     * Get lock
+     *
+     * A dummy method allowing drivers with no locking functionality
+     * (databases other than PostgreSQL and MySQL) to act as if they
+     * do acquire a lock.
+     *
+     * @param	string	$sessionId
+     * @return	bool
+     */
+    protected function _get_lock($sessionId)
+    {
+        $this->_lock = TRUE;
+        return TRUE;
+    }
+
+    // ------------------------------------------------------------------------
+
+    /**
+     * Release lock
+     *
+     * @return	bool
+     */
+    protected function _release_lock()
+    {
+        if ($this->_lock)
+        {
+            $this->_lock = FALSE;
+        }
+
+        return TRUE;
+    }
+
 
     /**
      * Cookie destroy
@@ -74,5 +118,24 @@ abstract Class SessionDriver implements \SessionHandlerInterface {
             $this->_config['cookie_secure'],
             TRUE
         );
+    }
+
+    /**
+     * Fail
+     *
+     * Drivers other than the 'files' one don't (need to) use the
+     * session.save_path INI setting, but that leads to confusing
+     * error messages emitted by PHP when open() or write() fail,
+     * as the message contains session.save_path ...
+     * To work around the problem, the drivers will call this method
+     * so that the INI is set just in time for the error message to
+     * be properly generated.
+     *
+     * @return	mixed
+     */
+    protected function _fail()
+    {
+        ini_set('session.save_path', Config::get('session_save_path'));
+        return $this->_failure;
     }
 }
