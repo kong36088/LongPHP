@@ -7,6 +7,7 @@
  */
 
 namespace Long\Library\Session;
+use Long\Core\LongException;
 
 /**
  * TODO complete db driver
@@ -18,112 +19,362 @@ class SessionDatabaseDriver extends SessionDriver implements \SessionHandlerInte
 {
 
     /**
-     * Close the session
-     * @link http://php.net/manual/en/sessionhandlerinterface.close.php
-     * @return bool <p>
-     * The return value (usually TRUE on success, FALSE on failure).
-     * Note this value is returned internally to PHP for processing.
-     * </p>
-     * @since 5.4.0
+     * DB object
+     *
+     * @var	object
      */
-    public function close()
-    {
-        // TODO: Implement close() method.
-    }
+    protected $_db;
 
     /**
-     * Destroy a session
-     * @link http://php.net/manual/en/sessionhandlerinterface.destroy.php
-     * @param string $session_id The session ID being destroyed.
-     * @return bool <p>
-     * The return value (usually TRUE on success, FALSE on failure).
-     * Note this value is returned internally to PHP for processing.
-     * </p>
-     * @since 5.4.0
+     * Row exists flag
+     *
+     * @var	bool
      */
-    public function destroy($session_id)
-    {
-        // TODO: Implement destroy() method.
-    }
+    protected $_row_exists = FALSE;
 
     /**
-     * Cleanup old sessions
-     * @link http://php.net/manual/en/sessionhandlerinterface.gc.php
-     * @param int $maxlifetime <p>
-     * Sessions that have not updated for
-     * the last maxlifetime seconds will be removed.
-     * </p>
-     * @return bool <p>
-     * The return value (usually TRUE on success, FALSE on failure).
-     * Note this value is returned internally to PHP for processing.
-     * </p>
-     * @since 5.4.0
+     * Lock "driver" flag
+     *
+     * @var	string
      */
-    public function gc($maxlifetime)
-    {
-        // TODO: Implement gc() method.
-    }
+    protected $_platform;
+
+    // ------------------------------------------------------------------------
 
     /**
-     * Initialize session
-     * @link http://php.net/manual/en/sessionhandlerinterface.open.php
-     * @param string $save_path The path where to store/retrieve the session.
-     * @param string $name The session name.
-     * @return bool <p>
-     * The return value (usually TRUE on success, FALSE on failure).
-     * Note this value is returned internally to PHP for processing.
-     * </p>
-     * @since 5.4.0
+     * Class constructor
+     *
+     * @param    array $params Configuration parameters
+     * @throws LongException
+     * @return void
+     */
+    public function __construct(&$params)
+    {
+        parent::__construct($params);
+
+        $CI =& get_instance();
+        isset($CI->db) OR $CI->load->database();
+        $this->_db = $CI->db;
+
+        if ( ! $this->_db instanceof CI_DB_query_builder)
+        {
+            throw new LongException('Query Builder not enabled for the configured database. Aborting.');
+        }
+        elseif ($this->_db->pconnect)
+        {
+            throw new LongException('Configured database connection is persistent. Aborting.');
+        }
+        elseif ($this->_db->cache_on)
+        {
+            throw new LongException('Configured database connection has cache enabled. Aborting.');
+        }
+
+        $db_driver = $this->_db->dbdriver.(empty($this->_db->subdriver) ? '' : '_'.$this->_db->subdriver);
+        if (strpos($db_driver, 'mysql') !== FALSE)
+        {
+            $this->_platform = 'mysql';
+        }
+        elseif (in_array($db_driver, array('postgre', 'pdo_pgsql'), TRUE))
+        {
+            $this->_platform = 'postgre';
+        }
+
+        // Note: BC work-around for the old 'sess_table_name' setting, should be removed in the future.
+        if ( ! isset($this->_config['save_path']) && ($this->_config['save_path'] = config_item('sess_table_name')))
+        {
+            log_message('debug', 'Session: "sess_save_path" is empty; using BC fallback to "sess_table_name".');
+        }
+    }
+
+    // ------------------------------------------------------------------------
+
+    /**
+     * Open
+     *
+     * Initializes the database connection
+     *
+     * @param	string	$save_path	Table name
+     * @param	string	$name		Session cookie name, unused
+     * @return	bool
      */
     public function open($save_path, $name)
     {
-        // TODO: Implement open() method.
+        if (empty($this->_db->conn_id) && ! $this->_db->db_connect())
+        {
+            return $this->_fail();
+        }
+
+        return $this->_success;
     }
 
+    // ------------------------------------------------------------------------
+
     /**
-     * Read session data
-     * @link http://php.net/manual/en/sessionhandlerinterface.read.php
-     * @param string $session_id The session id to read data for.
-     * @return string <p>
-     * Returns an encoded string of the read data.
-     * If nothing was read, it must return an empty string.
-     * Note this value is returned internally to PHP for processing.
-     * </p>
-     * @since 5.4.0
+     * Read
+     *
+     * Reads session data and acquires a lock
+     *
+     * @param	string	$session_id	Session ID
+     * @return	string	Serialized session data
      */
     public function read($session_id)
     {
-        // TODO: Implement read() method.
+        if ($this->_get_lock($session_id) !== FALSE)
+        {
+            // Prevent previous QB calls from messing with our queries
+            $this->_db->reset_query();
+
+            // Needed by write() to detect session_regenerate_id() calls
+            $this->_session_id = $session_id;
+
+            $this->_db
+                ->select('data')
+                ->from($this->_config['save_path'])
+                ->where('id', $session_id);
+
+            if ($this->_config['match_ip'])
+            {
+                $this->_db->where('ip_address', $_SERVER['REMOTE_ADDR']);
+            }
+
+            if ( ! ($result = $this->_db->get()) OR ($result = $result->row()) === NULL)
+            {
+                // PHP7 will reuse the same SessionHandler object after
+                // ID regeneration, so we need to explicitly set this to
+                // FALSE instead of relying on the default ...
+                $this->_row_exists = FALSE;
+                $this->_fingerprint = md5('');
+                return '';
+            }
+
+            // PostgreSQL's variant of a BLOB datatype is Bytea, which is a
+            // PITA to work with, so we use base64-encoded data in a TEXT
+            // field instead.
+            $result = ($this->_platform === 'postgre')
+                ? base64_decode(rtrim($result->data))
+                : $result->data;
+
+            $this->_fingerprint = md5($result);
+            $this->_row_exists = TRUE;
+            return $result;
+        }
+
+        $this->_fingerprint = md5('');
+        return '';
     }
 
+    // ------------------------------------------------------------------------
+
     /**
-     * Write session data
-     * @link http://php.net/manual/en/sessionhandlerinterface.write.php
-     * @param string $session_id The session id.
-     * @param string $session_data <p>
-     * The encoded session data. This data is the
-     * result of the PHP internally encoding
-     * the $_SESSION superglobal to a serialized
-     * string and passing it as this parameter.
-     * Please note sessions use an alternative serialization method.
-     * </p>
-     * @return bool <p>
-     * The return value (usually TRUE on success, FALSE on failure).
-     * Note this value is returned internally to PHP for processing.
-     * </p>
-     * @since 5.4.0
+     * Write
+     *
+     * Writes (create / update) session data
+     *
+     * @param	string	$session_id	Session ID
+     * @param	string	$session_data	Serialized session data
+     * @return	bool
      */
     public function write($session_id, $session_data)
     {
-        // TODO: Implement write() method.
+        // Prevent previous QB calls from messing with our queries
+        $this->_db->reset_query();
+
+        // Was the ID regenerated?
+        if (isset($this->_session_id) && $session_id !== $this->_session_id)
+        {
+            if ( ! $this->_release_lock() OR ! $this->_get_lock($session_id))
+            {
+                return $this->_fail();
+            }
+
+            $this->_row_exists = FALSE;
+            $this->_session_id = $session_id;
+        }
+        elseif ($this->_lock === FALSE)
+        {
+            return $this->_fail();
+        }
+
+        if ($this->_row_exists === FALSE)
+        {
+            $insert_data = array(
+                'id' => $session_id,
+                'ip_address' => $_SERVER['REMOTE_ADDR'],
+                'timestamp' => time(),
+                'data' => ($this->_platform === 'postgre' ? base64_encode($session_data) : $session_data)
+            );
+
+            if ($this->_db->insert($this->_config['save_path'], $insert_data))
+            {
+                $this->_fingerprint = md5($session_data);
+                $this->_row_exists = TRUE;
+                return $this->_success;
+            }
+
+            return $this->_fail();
+        }
+
+        $this->_db->where('id', $session_id);
+        if ($this->_config['match_ip'])
+        {
+            $this->_db->where('ip_address', $_SERVER['REMOTE_ADDR']);
+        }
+
+        $update_data = array('timestamp' => time());
+        if ($this->_fingerprint !== md5($session_data))
+        {
+            $update_data['data'] = ($this->_platform === 'postgre')
+                ? base64_encode($session_data)
+                : $session_data;
+        }
+
+        if ($this->_db->update($this->_config['save_path'], $update_data))
+        {
+            $this->_fingerprint = md5($session_data);
+            return $this->_success;
+        }
+
+        return $this->_fail();
     }
 
+    // ------------------------------------------------------------------------
 
-    protected function lock(){
-
+    /**
+     * Close
+     *
+     * Releases locks
+     *
+     * @return	bool
+     */
+    public function close()
+    {
+        return ($this->_lock && ! $this->_release_lock())
+            ? $this->_fail()
+            : $this->_success;
     }
 
-    protected function releaseLock(){
+    // ------------------------------------------------------------------------
 
+    /**
+     * Destroy
+     *
+     * Destroys the current session.
+     *
+     * @param	string	$session_id	Session ID
+     * @return	bool
+     */
+    public function destroy($session_id)
+    {
+        if ($this->_lock)
+        {
+            // Prevent previous QB calls from messing with our queries
+            $this->_db->reset_query();
+
+            $this->_db->where('id', $session_id);
+            if ($this->_config['match_ip'])
+            {
+                $this->_db->where('ip_address', $_SERVER['REMOTE_ADDR']);
+            }
+
+            if ( ! $this->_db->delete($this->_config['save_path']))
+            {
+                return $this->_fail();
+            }
+        }
+
+        if ($this->close() === $this->_success)
+        {
+            $this->_cookieDestroy();
+            return $this->_success;
+        }
+
+        return $this->_fail();
+    }
+
+    // ------------------------------------------------------------------------
+
+    /**
+     * Garbage Collector
+     *
+     * Deletes expired sessions
+     *
+     * @param	int 	$maxlifetime	Maximum lifetime of sessions
+     * @return	bool
+     */
+    public function gc($maxlifetime)
+    {
+        // Prevent previous QB calls from messing with our queries
+        $this->_db->reset_query();
+
+        return ($this->_db->delete($this->_config['save_path'], 'timestamp < '.(time() - $maxlifetime)))
+            ? $this->_success
+            : $this->_fail();
+    }
+
+    // ------------------------------------------------------------------------
+
+    /**
+     * Get lock
+     *
+     * Acquires a lock, depending on the underlying platform.
+     *
+     * @param	string	$session_id	Session ID
+     * @return	bool
+     */
+    protected function _get_lock($session_id)
+    {
+        if ($this->_platform === 'mysqli')
+        {
+            $arg = md5($session_id.($this->_config['match_ip'] ? '_'.$_SERVER['REMOTE_ADDR'] : ''));
+            if ($this->_db->query("SELECT GET_LOCK('".$arg."', 300) AS long_session_lock")->row()->ci_session_lock)
+            {
+                $this->_lock = $arg;
+                return TRUE;
+            }
+
+            return FALSE;
+        }
+
+        return parent::_get_lock($session_id);
+    }
+
+    // ------------------------------------------------------------------------
+
+    /**
+     * Release lock
+     *
+     * Releases a previously acquired lock
+     *
+     * @return	bool
+     */
+    protected function _release_lock()
+    {
+        if ( ! $this->_lock)
+        {
+            return TRUE;
+        }
+
+        if ($this->_platform === 'mysql')
+        {
+            if ($this->_db->query("SELECT RELEASE_LOCK('".$this->_lock."') AS ci_session_lock")->row()->ci_session_lock)
+            {
+                $this->_lock = FALSE;
+                return TRUE;
+            }
+
+            return FALSE;
+        }
+        elseif ($this->_platform === 'postgre')
+        {
+            if ($this->_db->simple_query('SELECT pg_advisory_unlock('.$this->_lock.')'))
+            {
+                $this->_lock = FALSE;
+                return TRUE;
+            }
+
+            return FALSE;
+        }
+
+        return parent::_release_lock();
     }
 }
