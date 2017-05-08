@@ -25,22 +25,19 @@ class SessionFileDriver extends SessionDriver implements \SessionHandlerInterfac
     protected $_fileHandle = null;
 
     /**
-     * session id regx pattern
-     * Leave blank now, will be used in future
-     * @var string
-     */
-    protected $_sidRegexp = '';
-
-    /**
      * File new flag
      *
      * @var    bool
      */
     protected $_fileNew;
 
+    protected $_sidRegexp = '';
+
     public function __construct($params = array())
     {
         parent::__construct($params);
+
+        $this->_sidRegexp = empty($params['sid_regexp'])?'[0-9a-zA-Z,-]*':$params['sid_regexp'];
 
         if (isset($this->_config['session_path'])) {
             $this->_config['session_path'] = rtrim($this->_config['session_path'], '/\\');
@@ -131,15 +128,11 @@ class SessionFileDriver extends SessionDriver implements \SessionHandlerInterfac
 
         $ts = time() - $maxLifetime;
 
-//        $pattern = ($this->_config['match_ip'] === TRUE)
-//            ? '[0-9a-f]{32}'
-//            : '';
-        $pattern = '';
-
         $pattern = sprintf(
-            '#\A%s' . $pattern . $this->_sidRegexp . '\z#',
+            '/\A%s'.$this->_sidRegexp.'\z/',
             preg_quote($this->_config['session_cookie_name'])
         );
+        echo $pattern . '<br/>';
 
         while (($file = readdir($directory)) !== FALSE) {
             // If the filename doesn't match this pattern, it's either not a session file or is not ours

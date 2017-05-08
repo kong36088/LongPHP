@@ -7,4 +7,4 @@ Framework/session/*
 
 !cache/index.html
 !Application/logs/index.html
-!Framework/session/index.html
+!Framework/index.html

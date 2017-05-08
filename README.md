@@ -417,6 +417,7 @@ try {
 ```
 
 # Servers
+If you want to make your uri shorter, the `url rewrite` will help you hide `index.php` in uri.
 
 ## nginx
 
@@ -443,7 +444,7 @@ server
     access_log  /var/log/Longphp/access.log  access;
 }
 ```
-If your project is not in the root directory
+If your project is not the root directory
 
 For example, your project is located in `/path/to/root/Longphp`
 
@@ -471,8 +472,12 @@ server
 }
 ```
 
-
 ## apache
+
+If you are looking forward to rewriting url, please make sure that you have enabled apache `rewrite module`.
+We have already written `.htaccess` file under the framework directory for you.
+
+Here is the configuration of apache.
 ``` apacheconfig
 <VirtualHost *:80>
     DocumentRoot "/path/to/Longphp"
