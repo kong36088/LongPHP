@@ -6,9 +6,8 @@
 
 namespace Long\Core;
 
-use Long\Library\Output;
-use Philo\Blade\Blade;
 use Long\Library\Logger\Log;
+use Philo\Blade\Blade;
 
 
 class LongController
@@ -16,7 +15,6 @@ class LongController
 
     private static $_instance;
     /**
-     * 用于保存已加载的外部类
      * @var array
      */
     protected $_class = array();
@@ -61,34 +59,14 @@ class LongController
 
     /**
      * render templates using blade
-     * @param string $bladeFile blade文件路径
+     * @param string $bladeFile blade directory
      * @param array $params the data being assigned
      */
-    protected function _render($bladeFile, $params = array())
+    function render($bladeFile, $params = array())
     {
         $blade = new Blade(VIEW_PATH, CACHE_PATH);
         $html = $blade->view()->make($bladeFile, $params)->render();
-        $this->_output($html, 'html');
-    }
-
-    /**
-     * @param string|array $data
-     * @param string $type output type
-     */
-    protected function _output($data, $type = 'RAW')
-    {
-        $type = strtoupper($type);
-
-        switch ($type) {
-            case 'JSON':
-                Output::json($data);
-                break;
-            case 'HTML':
-                Output::html($data);
-                break;
-            default:
-                Output::raw($data);
-        }
+        output($html, 'html');
     }
 
     /**
@@ -98,7 +76,7 @@ class LongController
      * @param string $namespace the namespace of model
      * @return object
      */
-    protected function &_model($className, $args = array(), $namespace = ''){
+    protected function &model($className, $args = array(), $namespace = ''){
         if(empty($namespace)){
             $namespace = $this->_modelPath;
         }

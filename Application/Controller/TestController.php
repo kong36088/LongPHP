@@ -42,18 +42,20 @@ class TestController extends LongController
 	}
 
 	public function initialize(){
-	    $this->_output("initMethod<br>");
+	    output("initMethod<br>");
     }
 
 	public function index()
 	{
         echo Input::get('a');
+        // or
+        // input('get.a');
         echo "index method called<br>";
 	}
 
 	public function testRender()
 	{
-		$this->_render('test', ['test' => 'test here']);
+		$this->render('test', ['test' => 'test here']);
 	}
 
 	protected function testConfig()
@@ -63,13 +65,13 @@ class TestController extends LongController
 
 	public function testOutput()
 	{
-		$this->_output(['testdata1' => 'data1', 'testdata2' => 'data2'], 'json');
-		//$this->_output('raw data test<br>' . PHP_EOL, 'raw');
+		output(['testdata1' => 'data1', 'testdata2' => 'data2'], 'json');
+		//output('raw data test<br>' . PHP_EOL, 'raw');
 	}
 
 	public function testUrl()
 	{
-		$this->_output(Url::siteUrl('https') . PHP_EOL, 'raw');
+		output(Url::siteUrl('https') . PHP_EOL, 'raw');
 	}
 
 	protected function testError()
@@ -86,7 +88,7 @@ class TestController extends LongController
 
 	public function testModel()
 	{
-		$model = $this->_model('testModel');
+		$model = $this->model('testModel');
 		print_r($model->getById(4));
 		var_dump($model->insertTestData());
 		var_dump($model->deleteTestData(2));

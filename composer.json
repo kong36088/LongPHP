@@ -18,5 +18,14 @@
             "System",
             "Application"
         ]
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "http://packagist.phpcomposer.com"
+        }
+    },
+    "config": {
+        "secure-http": false
     }
 }

@@ -88,6 +88,8 @@ abstract class DBDriver
 
 	abstract public function commit();
 
+	abstract public function rollback();
+
 	/**
 	 * 关闭数据库连接
 	 */
